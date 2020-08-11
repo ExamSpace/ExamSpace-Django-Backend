@@ -7,6 +7,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import status
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
@@ -30,9 +31,14 @@ class ExamDetailView(RetrieveUpdateDestroyAPIView):
 
 class EnrollMentView(CreateAPIView):
     serializer_class = EnrollmentSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def perform_create(self, serializer, id=None):
         print(self.kwargs)
         id = self.kwargs.get('id', None)
-        exam = Exam.objects.get(pk=id)
-        serializer.save(owner=self.request.user, exam=exam)
+
+        try:
+            exam = Exam.objects.get(pk=id)
+            serializer.save(owner=self.request.user, exam=exam)
+        except ObjectDoesNotExist as identifier:
+            return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)
