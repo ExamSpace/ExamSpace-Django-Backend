@@ -29,6 +29,18 @@ class ExamDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAdminOrReadOnly, )
 
 
+class QuestionsListView(ListCreateAPIView):
+    serializer_class = QuestionSerializer
+    queryset = Question.objects.all()
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+
+class QuestionDetailView(RetrieveUpdateDestroyAPIView):
+    serializer_class = QuestionSerializer
+    queryset = Question.objects.all()
+    lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )
+
+
 class EnrollMentView(CreateAPIView):
     serializer_class = EnrollmentSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
