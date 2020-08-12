@@ -33,18 +33,17 @@ class QuestionsListView(ListCreateAPIView):
     serializer_class = QuestionSerializer
     def get_queryset(self):
         examId=self.kwargs['examId']
-        print('Hello')
         return Question.objects.filter(exam=examId)
-        
-
-    # permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
     
 
 class QuestionDetailView(RetrieveUpdateDestroyAPIView):
-    serializer_class = QuestionSerializer
-    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer   
+    def get_queryset(self):
+        examId=self.kwargs['examId']
+        return Question.objects.filter(exam=examId)
     lookup_field = "id"
-    # permission_classes = (IsAdminOrReadOnly, )
+    permission_classes = (IsAdminOrReadOnly, )
 
 
 class EnrollMentView(CreateAPIView):
