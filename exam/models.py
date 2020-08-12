@@ -9,7 +9,7 @@ class Exam(models.Model):
 
 class Question(models.Model):
     question = models.CharField(max_length=500)
-    exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
+    exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE)
 
 
 class Enrollment(models.Model):
