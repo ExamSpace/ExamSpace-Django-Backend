@@ -19,26 +19,32 @@ class IsAdminOrReadOnly(permissions.BasePermission):
 class ExamsListView(ListCreateAPIView):
     serializer_class = ExamSerializer
     queryset = Exam.objects.all()
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+    # permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
 
 class ExamDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = ExamSerializer
     queryset = Exam.objects.all()
     lookup_field = "id"
-    permission_classes = (IsAdminOrReadOnly, )
+    # permission_classes = (IsAdminOrReadOnly, )
 
 
 class QuestionsListView(ListCreateAPIView):
     serializer_class = QuestionSerializer
-    queryset = Question.objects.all()
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+    def get_queryset(self):
+        examId=self.kwargs['examId']
+        print('Hello')
+        return Question.objects.filter(exam=examId)
+        
+
+    # permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+    
 
 class QuestionDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = QuestionSerializer
     queryset = Question.objects.all()
     lookup_field = "id"
-    permission_classes = (IsAdminOrReadOnly, )
+    # permission_classes = (IsAdminOrReadOnly, )
 
 
 class EnrollMentView(CreateAPIView):
