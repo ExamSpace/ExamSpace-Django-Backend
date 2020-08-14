@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from .models import Exam, Question, Enrollment
-from .serializers import ExamSerializer, QuestionSerializer, EnrollmentSerializer
+from .serializers import ExamSerializer, QuestionSerializer, EnrollmentSerializer, StartedSerializer
 
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView, CreateAPIView
 from rest_framework import permissions
@@ -59,3 +59,17 @@ class EnrollMentView(CreateAPIView):
             serializer.save(owner=self.request.user, exam=exam)
         except ObjectDoesNotExist as identifier:
             return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)
+
+class StartedView(CreateAPIView):
+    serializer_class = StartedSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    def perform_create(self, serializer, id=None):
+        print(self.kwargs)
+        id = self.kwargs.get('id', None)
+
+        try:
+            exam = Exam.objects.get(pk=id)
+            serializer.save(owner=self.request.user, exam=exam)
+        except ObjectDoesNotExist as identifier:
+            return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)            

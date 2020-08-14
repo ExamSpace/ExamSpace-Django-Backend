@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 from datetime import date
 
 class Exam(models.Model):
@@ -55,4 +56,11 @@ class Question(models.Model):
 class Enrollment(models.Model):
     exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE)
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    enrolled_at = models.DateTimeField(auto_now_add=True)
+    enrolled_at = models.DateTimeField(default=timezone.now)
+
+class Started(models.Model):
+    exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE)
+    owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    started_at = models.DateTimeField(default=timezone.now)
+    class Meta:
+        verbose_name_plural = "Started"
