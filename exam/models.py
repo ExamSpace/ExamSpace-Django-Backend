@@ -68,7 +68,7 @@ class Started(models.Model):
 
 class Answered(models.Model):
     question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
-    answer = models.IntegerField(default=0)
+    answer = models.IntegerField(default=0, unique=True)
     class Meta:
         verbose_name_plural = "Answered"
 
