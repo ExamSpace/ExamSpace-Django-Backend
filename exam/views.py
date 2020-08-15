@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
-from .models import Exam, Question, Enrollment
-from .serializers import ExamSerializer, QuestionSerializer, EnrollmentSerializer, StartedSerializer
+from .models import Exam, Question, Enrollment, Answered
+from .serializers import ExamSerializer, QuestionSerializer, EnrollmentSerializer, StartedSerializer, AnsweredSerializer
 
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView, CreateAPIView
 from rest_framework import permissions
@@ -33,7 +33,7 @@ class QuestionsListView(ListCreateAPIView):
     serializer_class = QuestionSerializer
     def get_queryset(self):
         examId=self.kwargs['examId']
-        return Question.objects.filter(exam=examId)
+        return Question.objects.filter(exam=examId)  
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
     
 
@@ -72,4 +72,12 @@ class StartedView(CreateAPIView):
             exam = Exam.objects.get(pk=id)
             serializer.save(owner=self.request.user, exam=exam)
         except ObjectDoesNotExist as identifier:
-            return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)            
+            return Response('Bad request', status=status.HTTP_400_BAD_REQUEST) 
+
+class AnsweredView(CreateAPIView):
+    serializer_class = AnsweredSerializer
+    # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    def get_queryset(self):
+        qid=self.kwargs['qid']
+        return Question.objects.filter(Question=qid)                       

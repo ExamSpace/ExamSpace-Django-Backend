@@ -58,9 +58,20 @@ class Enrollment(models.Model):
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
     enrolled_at = models.DateTimeField(default=timezone.now)
 
+
 class Started(models.Model):
     exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE)
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
     started_at = models.DateTimeField(default=timezone.now)
     class Meta:
         verbose_name_plural = "Started"
+
+
+class Answered(models.Model):
+    question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
+    answer = models.IntegerField(default=0)
+    class Meta:
+        verbose_name_plural = "Answered"
+
+
+    
