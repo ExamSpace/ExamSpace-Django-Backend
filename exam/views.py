@@ -78,6 +78,10 @@ class AnsweredView(CreateAPIView):
     serializer_class = AnsweredSerializer
     # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
-    def get_queryset(self):
+    def perform_create(self, serializer):
+        option=self.kwargs['option']
         qid=self.kwargs['qid']
-        return Question.objects.filter(Question=qid)                       
+        print(option,qid)        
+        serializer.save(question=qid, answer=option)
+
+                     

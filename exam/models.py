@@ -1,14 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-from datetime import date
 
 class Exam(models.Model):
     name = models.CharField(max_length=255)
     instruction = models.TextField()
     duration = models.IntegerField()
-    start_date = models.DateField(default=date.today())
-    end_date = models.DateField(default=date.today())
+    start_date = models.DateField(default=timezone.now)
+    end_date = models.DateField(default=timezone.now)
     passing_percent = models.IntegerField()
     negative_marking = models.CharField(max_length=3)
     negative_marks = models.FloatField()
@@ -21,9 +20,9 @@ class Exam(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=0, )
     status = models.CharField(max_length=10)
     user_id = models.IntegerField()
-    finalized_time = models.DateField(default=date.today())
-    created = models.DateField(default=date.today())
-    modified = models.DateField(default=date.today())
+    finalized_time = models.DateField(default=timezone.now)
+    created = models.DateField(default=timezone.now)
+    modified = models.DateField(default=timezone.now)
     def __str__(self):
         return self.name
 
