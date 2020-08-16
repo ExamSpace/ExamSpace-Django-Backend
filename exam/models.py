@@ -2,6 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+EXAM_TYPE = (
+    ('marathon', 'MARATHON'),
+    ('single', 'SINGLE'),
+    ('timer', 'TIMER'),
+)
+
+
 class Exam(models.Model):
     name = models.CharField(max_length=255)
     instruction = models.TextField()
@@ -9,50 +16,49 @@ class Exam(models.Model):
     start_date = models.DateField(default=timezone.now)
     end_date = models.DateField(default=timezone.now)
     passing_percent = models.IntegerField()
-    negative_marking = models.CharField(max_length=3)
-    negative_marks = models.FloatField()
+    negative_marking = models.BooleanField(default=False)
+    negative_marks = models.FloatField(default=0.0)
     marks = models.FloatField()
-    attempt_count = models.IntegerField()
-    declare_result = models.CharField(max_length=3)
-    finish_result = models.CharField(max_length=1)
-    ques_random = models.CharField(max_length=1)
-    paid_exam = models.CharField(max_length=1)
-    amount = models.DecimalField(max_digits=10, decimal_places=0, )
-    status = models.CharField(max_length=10)
-    user_id = models.IntegerField()
+    ques_random = models.BooleanField(default=False)
+    paid_exam = models.BooleanField(default=False)
+    amount = models.DecimalField(max_digits=10, decimal_places=4, default=0.0)
+    status = models.CharField(max_length=10, blank=True)
     finalized_time = models.DateField(default=timezone.now)
     created = models.DateField(default=timezone.now)
     modified = models.DateField(default=timezone.now)
+    examtype = models.CharField(
+        max_length=50, choices=EXAM_TYPE, default='marathon')
+    title_image_url = models.URLField(blank=True)
+
     def __str__(self):
         return self.name
 
 
 class Question(models.Model):
-    qtype_id = models.IntegerField()
-    img = models.CharField(max_length=200)
-    qtag_id = models.IntegerField()
-    question = models.TextField()
-    option1 = models.TextField()
-    option2 = models.TextField()
-    option3 = models.TextField()
-    option4 = models.TextField()
-    option5 = models.TextField()
-    option6 = models.TextField()
-    marks = models.FloatField()
-    negative_marks = models.FloatField()
-    hint = models.TextField()
-    explanation = models.TextField()
-    explort = models.TextField()
-    answer = models.CharField(max_length=15)
-    true_false = models.CharField(max_length=5)
-    fill_blank = models.CharField(max_length=100)
-    status = models.CharField(max_length=3)
+    img = models.URLField(blank=True)
+    question = models.TextField(blank=False)
+    option1 = models.TextField(blank=True)
+    option2 = models.TextField(blank=True)
+    option3 = models.TextField(blank=True)
+    option4 = models.TextField(blank=True)
+    option5 = models.TextField(blank=True)
+    option6 = models.TextField(blank=True)
+    marks = models.FloatField(default=1.0)
+    hint = models.TextField(blank=True)
+    explanation = models.TextField(blank=True)
+    explort = models.TextField(blank=True)
+    answer = models.IntegerField(blank=False)
+    true_false = models.BooleanField(default=False)
+    fill_blank = models.BooleanField(default=False)
     exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE)
+
     def __str__(self):
         return self.question
 
 
 class Enrollment(models.Model):
+    class Meta:
+        unique_together = [['exam', 'owner']]
     exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE)
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
     enrolled_at = models.DateTimeField(default=timezone.now)
@@ -64,6 +70,7 @@ class Started(models.Model):
     exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE)
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
     started_at = models.DateTimeField(default=timezone.now)
+
     class Meta:
         verbose_name_plural = "Started"
 
@@ -71,8 +78,6 @@ class Started(models.Model):
 class Answered(models.Model):
     question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
     answer = models.IntegerField(default=0, unique=True)
+
     class Meta:
         verbose_name_plural = "Answered"
-
-
-    
