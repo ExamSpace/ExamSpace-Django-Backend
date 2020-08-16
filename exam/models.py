@@ -62,8 +62,6 @@ class Enrollment(models.Model):
     exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE)
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
     enrolled_at = models.DateTimeField(default=timezone.now)
-    class Meta:
-        unique_together = ["exam", "owner"]
 
 
 class Started(models.Model):
