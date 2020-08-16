@@ -46,6 +46,20 @@ class QuestionDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAdminOrReadOnly, )
 
 
+# class EnrollMentView(CreateAPIView):
+#     serializer_class = EnrollmentSerializer
+#     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+#     def perform_create(self, serializer, id=None):
+#         print(self.kwargs)
+#         id = self.kwargs.get('id', None)
+
+#         try:
+#             exam = Exam.objects.get(pk=id)
+#             serializer.save(owner=self.request.user, exam=exam)
+#         except ObjectDoesNotExist as identifier:
+#             return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)
+
 class EnrollMentView(CreateAPIView):
     serializer_class = EnrollmentSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
@@ -53,12 +67,10 @@ class EnrollMentView(CreateAPIView):
     def perform_create(self, serializer, id=None):
         print(self.kwargs)
         id = self.kwargs.get('id', None)
+        exam = Exam.objects.get(pk=id)      
+        serializer.save(owner=self.request.user, exam=exam)
 
-        try:
-            exam = Exam.objects.get(pk=id)
-            serializer.save(owner=self.request.user, exam=exam)
-        except ObjectDoesNotExist as identifier:
-            return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)
+
 
 class StartedView(CreateAPIView):
     serializer_class = StartedSerializer
