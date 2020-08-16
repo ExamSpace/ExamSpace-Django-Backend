@@ -8,12 +8,28 @@ from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.utils import IntegrityError
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         is_admin = request.user and request.user.is_superuser
         return request.method in permissions.SAFE_METHODS or is_admin
+
+
+class IsAdminOrEnrolled(permissions.BasePermission):
+    def has_permission(self, request, view):
+        user = request.user
+        super_user = user and user.is_superuser
+
+        if not user.is_authenticated:
+            return False
+
+        exam_id = view.kwargs.get('examId', 0)
+        enrolled = Enrollment.objects.filter(
+            exam__id=exam_id, owner=user).exists()
+
+        return super_user or enrolled
 
 
 class ExamsListView(ListCreateAPIView):
@@ -31,34 +47,48 @@ class ExamDetailView(RetrieveUpdateDestroyAPIView):
 
 class QuestionsListView(ListCreateAPIView):
     serializer_class = QuestionSerializer
+    permission_classes = (IsAdminOrEnrolled,)
+
     def get_queryset(self):
-        examId=self.kwargs['examId']
-        return Question.objects.filter(exam=examId)  
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
-    
+        examId = self.kwargs['examId']
+        return Question.objects.filter(exam=examId)
+
 
 class QuestionDetailView(RetrieveUpdateDestroyAPIView):
-    serializer_class = QuestionSerializer   
+    serializer_class = QuestionSerializer
+
     def get_queryset(self):
-        examId=self.kwargs['examId']
+        examId = self.kwargs['examId']
         return Question.objects.filter(exam=examId)
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
 
 
-class EnrollMentView(CreateAPIView):
-    serializer_class = EnrollmentSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+class EnrollMentView(GenericAPIView):
+    def post(self, request, id=None):
+        # check if user present in the request
+        user = request.user
+        if not user.is_authenticated:
+            return Response("You are not logged in", status=status.HTTP_401_UNAUTHORIZED)
 
-    def perform_create(self, serializer, id=None):
-        print(self.kwargs)
-        id = self.kwargs.get('id', None)
+        if not id:
+            return Response("Invalid request", status=status.HTTP_400_BAD_REQUEST)
 
+        # check if exam id exists by looing into Enrollment table
         try:
             exam = Exam.objects.get(pk=id)
-            serializer.save(owner=self.request.user, exam=exam)
         except ObjectDoesNotExist as identifier:
-            return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)
+            return Response("Not found", status=status.HTTP_404_NOT_FOUND)
+
+        obj = Enrollment(owner=user, exam=exam)
+
+        try:
+            obj.save()
+        except IntegrityError as identifier:
+            return Response("You are already enrolled for this exam", status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_200_OK)
+
 
 class StartedView(CreateAPIView):
     serializer_class = StartedSerializer
@@ -72,16 +102,15 @@ class StartedView(CreateAPIView):
             exam = Exam.objects.get(pk=id)
             serializer.save(owner=self.request.user, exam=exam)
         except ObjectDoesNotExist as identifier:
-            return Response('Bad request', status=status.HTTP_400_BAD_REQUEST) 
+            return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)
+
 
 class AnsweredView(CreateAPIView):
     serializer_class = AnsweredSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def perform_create(self, serializer):
-        option=self.kwargs['option']
-        qid=self.kwargs['qid']
-        question = Question.objects.get(pk=qid)      
+        option = self.kwargs['option']
+        qid = self.kwargs['qid']
+        question = Question.objects.get(pk=qid)
         serializer.save(question=question, answer=option)
-
-                     

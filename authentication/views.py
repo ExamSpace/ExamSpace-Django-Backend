@@ -70,7 +70,7 @@ class LoginView(GenericAPIView):
         user = auth.authenticate(username=username, password=password)
         if user:
             auth_token = jwt.encode(
-                {'username': user.username, 'exp': datetime.utcnow()+timedelta(minutes=5)}, settings.JWT_SECRET_KEY)
+                {'username': user.username, 'exp': datetime.utcnow()+timedelta(minutes=100)}, settings.JWT_SECRET_KEY)
 
             uinque_id = uuid.uuid1().hex
             refresh_token = jwt.encode(
