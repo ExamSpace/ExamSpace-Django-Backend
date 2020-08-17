@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from .models import Exam, Question, Enrollment, Answered
+from .models import Exam, Question, Enrollment, Answered, Started
 from .serializers import ExamSerializer, QuestionSerializer, EnrollmentSerializer, StartedSerializer, AnsweredSerializer
 
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView, CreateAPIView
@@ -89,22 +89,19 @@ class EnrollMentView(GenericAPIView):
 
         return Response(status=status.HTTP_200_OK)
 
+# class StartedView(CreateAPIView):
+#     serializer_class = StartedSerializer
+#     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
-class StartedView(CreateAPIView):
-    serializer_class = StartedSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+#     def perform_create(self, serializer, id=None):
+#         print(self.kwargs)
+#         id = self.kwargs.get('id', None)
 
-    def perform_create(self, serializer, id=None):
-        print(self.kwargs)
-        id = self.kwargs.get('id', None)
-
-        try:
-            exam = Exam.objects.get(pk=id)
-            serializer.save(owner=self.request.user, exam=exam)
-        except ObjectDoesNotExist as identifier:
-            return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)
-
-
+#         try:
+#             exam = Exam.objects.get(pk=id)
+#             serializer.save(owner=self.request.user, exam=exam)
+#         except ObjectDoesNotExist as identifier:
+#             return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)
 class AnsweredView(CreateAPIView):
     serializer_class = AnsweredSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
@@ -114,3 +111,56 @@ class AnsweredView(CreateAPIView):
         qid = self.kwargs['qid']
         question = Question.objects.get(pk=qid)
         serializer.save(question=question, answer=option)
+
+class StartedView(GenericAPIView):
+    def post(self, request, id=None):
+        # check if user present in the request
+        user = request.user
+        if not user.is_authenticated:
+            return Response("You are not logged in", status=status.HTTP_401_UNAUTHORIZED)
+
+        if not id:
+            return Response("Invalid request", status=status.HTTP_400_BAD_REQUEST)
+
+        # check if exam id exists by looing into Started table
+        try:
+            exam = Exam.objects.get(pk=id)
+        except ObjectDoesNotExist as identifier:
+            return Response("Not found", status=status.HTTP_404_NOT_FOUND)
+
+        obj = Started(owner=user, exam=exam)
+
+        try:
+            obj.save()
+        except IntegrityError as identifier:
+            return Response("You already started this exam", status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_200_OK)        
+
+
+class AnsweredView(GenericAPIView):
+    def post(self, request, id=None):
+        # check if user present in the request
+        user = request.user
+        if not user.is_authenticated:
+            return Response("You are not logged in", status=status.HTTP_401_UNAUTHORIZED)
+
+        if not id:
+            return Response("Invalid request", status=status.HTTP_400_BAD_REQUEST)
+
+        # check if question id exists by looing into Answered table
+        try:
+            option = self.kwargs['option']
+            qid = self.kwargs['qid']
+            question = Question.objects.get(pk=qid)
+        except ObjectDoesNotExist as identifier:
+            return Response("Not found", status=status.HTTP_404_NOT_FOUND)
+
+        obj = Answered(question=question, answer=option)
+
+        try:
+            obj.save()
+        except IntegrityError as identifier:
+            return Response("You already answered this question", status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_200_OK)
