@@ -67,12 +67,10 @@ class Enrollment(models.Model):
 class Started(models.Model):
     class Meta:
         unique_together = [['exam', 'owner']]
+        verbose_name_plural = "Started"
     exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE)
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
     started_at = models.DateTimeField(default=timezone.now)
-
-    class Meta:
-        verbose_name_plural = "Started"
 
 
 class Answered(models.Model):
