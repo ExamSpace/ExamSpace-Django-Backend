@@ -12,6 +12,7 @@ class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
         fields = '__all__'
+        extra_kwargs = {'answer': {'write_only': True}}
 
 
 class EnrollmentSerializer(serializers.ModelSerializer):
@@ -19,15 +20,17 @@ class EnrollmentSerializer(serializers.ModelSerializer):
         model = Enrollment
         fields = []
 
+
 class StartedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Started
         fields = []
 
+
 class AnsweredSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answered
-        fields = []                      
+        fields = []
 
     # def save(self):
      #   return super
