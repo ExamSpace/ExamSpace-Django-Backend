@@ -73,9 +73,58 @@ class Started(models.Model):
     started_at = models.DateTimeField(default=timezone.now)
 
 
-class Answered(models.Model):
+class Answered(models.Model):   
     question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
     answer = models.IntegerField(default=0, unique=True)
-
     class Meta:
         verbose_name_plural = "Answered"
+
+class Cities(models.Model):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    country_id = models.CharField(max_length=255)
+    state = models.CharField(max_length=255)
+    created = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        verbose_name_plural = "Cities"
+
+    def __str__(self):
+        return self.title
+
+class Bloodgroup(models.Model):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    blood_group_name = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name_plural = "Blood Group"    
+
+    def __str__(self):
+        return self.blood_group_name
+
+class Countries(models.Model):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    country_code = models.CharField(max_length=255)
+    default_currency = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name_plural = "Countries"
+
+    def __str__(self):
+        return self.title        
+
+class Currencies(models.Model):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    code = models.CharField(max_length=255)
+    sign = models.CharField(max_length=255)
+    usd_conversion_amount = models.IntegerField()
+    expire_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        verbose_name_plural = "Currencies"
+
+    def __str__(self):
+        return self.title    

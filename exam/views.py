@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
-from .models import Exam, Question, Enrollment, Answered, Started
-from .serializers import ExamSerializer, QuestionSerializer, EnrollmentSerializer, StartedSerializer, AnsweredSerializer
+from .models import Exam, Question, Enrollment, Answered, Started, Cities, Bloodgroup, Countries, Currencies
+from .serializers import ExamSerializer, QuestionSerializer, EnrollmentSerializer, StartedSerializer, AnsweredSerializer, CitiesSerializer, BloodgroupSerializer, CountriesSerializer, CurrenciesSerializer
 
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView, CreateAPIView
 from rest_framework import permissions
@@ -102,15 +102,6 @@ class EnrollMentView(GenericAPIView):
 #             serializer.save(owner=self.request.user, exam=exam)
 #         except ObjectDoesNotExist as identifier:
 #             return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)
-class AnsweredView(CreateAPIView):
-    serializer_class = AnsweredSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-
-    def perform_create(self, serializer):
-        option = self.kwargs['option']
-        qid = self.kwargs['qid']
-        question = Question.objects.get(pk=qid)
-        serializer.save(question=question, answer=option)
 
 class StartedView(GenericAPIView):
     def post(self, request, id=None):
@@ -135,32 +126,62 @@ class StartedView(GenericAPIView):
         except IntegrityError as identifier:
             return Response("You already started this exam", status=status.HTTP_200_OK)
 
-        return Response(status=status.HTTP_200_OK)        
-
-
-class AnsweredView(GenericAPIView):
-    def post(self, request, id=None):
-        # check if user present in the request
-        user = request.user
-        if not user.is_authenticated:
-            return Response("You are not logged in", status=status.HTTP_401_UNAUTHORIZED)
-
-        if not id:
-            return Response("Invalid request", status=status.HTTP_400_BAD_REQUEST)
-
-        # check if question id exists by looing into Answered table
-        try:
-            option = self.kwargs['option']
-            qid = self.kwargs['qid']
-            question = Question.objects.get(pk=qid)
-        except ObjectDoesNotExist as identifier:
-            return Response("Not found", status=status.HTTP_404_NOT_FOUND)
-
-        obj = Answered(question=question, answer=option)
-
-        try:
-            obj.save()
-        except IntegrityError as identifier:
-            return Response("You already answered this question", status=status.HTTP_200_OK)
-
         return Response(status=status.HTTP_200_OK)
+
+class AnsweredView(CreateAPIView):
+    serializer_class = AnsweredSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    def perform_create(self, serializer):
+        option=self.kwargs['option']
+        qid=self.kwargs['qid']
+        question = Question.objects.get(pk=qid)      
+        serializer.save(question=question, answer=option)
+
+class CitiesListView(ListCreateAPIView):
+    serializer_class = CitiesSerializer
+    queryset = Cities.objects.all()
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+
+
+class CitiesDetailView(RetrieveUpdateDestroyAPIView):
+    serializer_class = CitiesSerializer
+    queryset = Cities.objects.all()
+    lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )
+
+class BloodgroupListView(ListCreateAPIView):
+    serializer_class = BloodgroupSerializer
+    queryset = Bloodgroup.objects.all()
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+
+
+class BloodgroupDetailView(RetrieveUpdateDestroyAPIView):
+    serializer_class = BloodgroupSerializer
+    queryset = Bloodgroup.objects.all()
+    lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )
+
+class CountriesListView(ListCreateAPIView):
+    serializer_class = CountriesSerializer
+    queryset = Countries.objects.all()
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+
+
+class CountriesDetailView(RetrieveUpdateDestroyAPIView):
+    serializer_class = CountriesSerializer
+    queryset = Countries.objects.all()
+    lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )
+
+class CurrenciesListView(ListCreateAPIView):
+    serializer_class = CurrenciesSerializer
+    queryset = Currencies.objects.all()
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+
+
+class CurrenciesDetailView(RetrieveUpdateDestroyAPIView):
+    serializer_class = CurrenciesSerializer
+    queryset = Currencies.objects.all()
+    lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )
