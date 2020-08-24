@@ -1,9 +1,10 @@
 from django.shortcuts import render
 
-from .models import Exam, Question, Enrollment, Answered, Started
-from .serializers import ExamSerializer, QuestionSerializer, EnrollmentSerializer, StartedSerializer, AnsweredSerializer
-
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView, CreateAPIView
+# from .models import Exam, Question, Enrollment, Answered, Started, Subject
+# from .serializers import ExamSerializer, QuestionSerializer, EnrollmentSerializer, StartedSerializer, AnsweredSerializer, SubjectSerializer
+from .models import *
+from .serializers import *
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView, CreateAPIView, RetrieveUpdateAPIView, DestroyAPIView, ListAPIView, RetrieveAPIView
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import status
@@ -32,10 +33,15 @@ class IsAdminOrEnrolled(permissions.BasePermission):
         return super_user or enrolled
 
 
-class ExamsListView(ListCreateAPIView):
+class ExamsListView(ListAPIView):
     serializer_class = ExamSerializer
     queryset = Exam.objects.all()
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+
+class ExamCreateView(CreateAPIView):
+    serializer_class = ExamSerializer
+    queryset = Exam.objects.all()
+    permission_classes = (IsAdminOrReadOnly, )
 
 
 class ExamDetailView(RetrieveUpdateDestroyAPIView):
@@ -45,21 +51,53 @@ class ExamDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAdminOrReadOnly, )
 
 
-class QuestionsListView(ListCreateAPIView):
+class SubjectsListView(ListAPIView):
+    serializer_class = SubjectSerializer
+    def get_queryset(self):
+        examId = self.kwargs['examId']
+        return Subject.objects.filter(exam=examId)
+    permission_classes = (IsAdminOrEnrolled, )
+
+class SubjectCreateView(CreateAPIView):
+    serializer_class = SubjectSerializer
+    def get_queryset(self):
+        examId = self.kwargs['examId']
+        return Subject.objects.filter(exam=examId)
+    permission_classes = (IsAdminOrReadOnly, )
+
+
+class SubjectDetailView(RetrieveUpdateDestroyAPIView):
+    serializer_class = SubjectSerializer
+    def get_queryset(self):
+        examId = self.kwargs['examId']
+        return Subject.objects.filter(exam=examId)
+    lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )
+
+
+class QuestionsListView(ListAPIView):
     serializer_class = QuestionSerializer
     permission_classes = (IsAdminOrEnrolled,)
 
     def get_queryset(self):
-        examId = self.kwargs['examId']
-        return Question.objects.filter(exam=examId)
+        subjectId = self.kwargs['subjectId']
+        return Question.objects.filter(subject=subjectId)
+
+class QuestionCreateView(CreateAPIView):
+    serializer_class = QuestionSerializer
+    permission_classes = (IsAdminOrReadOnly,)
+
+    def get_queryset(self):
+        subjectId = self.kwargs['subjectId']
+        return Question.objects.filter(subject=subjectId)
 
 
 class QuestionDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = QuestionSerializer
 
     def get_queryset(self):
-        examId = self.kwargs['examId']
-        return Question.objects.filter(exam=examId)
+        subjectId = self.kwargs['subjectId']
+        return Question.objects.filter(subject=subjectId)
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
 
@@ -164,3 +202,119 @@ class AnsweredView(GenericAPIView):
             return Response("You already answered this question", status=status.HTTP_200_OK)
 
         return Response(status=status.HTTP_200_OK)
+
+
+
+
+class AddressCreateView(GenericAPIView):
+    serializer_class=AddressSerializer
+    def post(self, request, id=None):
+        
+        # check if user present in the request
+        user = request.user
+        if not user.is_authenticated:
+            return Response("You are not logged in", status=status.HTTP_401_UNAUTHORIZED)
+
+        if not id:
+            return Response("Invalid request", status=status.HTTP_400_BAD_REQUEST)
+
+        # check if exam id exists by looing into Started table
+        try:
+            owner = User.objects.get(pk=id)
+        except ObjectDoesNotExist as identifier:
+            return Response("User Not found", status=status.HTTP_404_NOT_FOUND)
+
+
+        if(not user.is_superuser):
+            obj = Address(
+            city_id= request.data['city_id'],
+            full_name=request.data['full_name'],
+            address=request.data['address'],
+            address_2=request.data['address_2'],
+            zip_code=request.data['zip_code'],
+            lat=request.data['lat'],
+            long=request.data['long'],
+            user=user)
+        else:
+            obj = Address(
+            city_id= request.data['city_id'],
+            full_name=request.data['full_name'],
+            address=request.data['address'],
+            address_2=request.data['address_2'],
+            zip_code=request.data['zip_code'],
+            lat=request.data['lat'],
+            long=request.data['long'],
+            user=owner)
+
+        try:
+            obj.save()
+        except IntegrityError as identifier:
+            return Response("This account already has addresses", status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_200_OK)
+        
+
+class AddressRetrieveView(RetrieveAPIView):
+    serializer_class = AddressSerializer
+    queryset = Address.objects.all()
+    lookup_field = "id"
+
+class AddressUpdateView(GenericAPIView):
+    serializer_class = AddressSerializer
+    def put(self, request,userId=None ,id=None):
+        
+        # check if user present in the request
+        user = request.user
+        # if not user.is_authenticated:
+        #     return Response("You are not logged in", status=status.HTTP_401_UNAUTHORIZED)
+
+        if not id:
+            return Response("Invalid request", status=status.HTTP_400_BAD_REQUEST)
+
+        if not userId:
+            return Response("Invalid request", status=status.HTTP_400_BAD_REQUEST)
+
+        # check if exam id exists by looing into Started table
+        try:
+            owner = User.objects.get(pk=self.kwargs['userId'])
+            print(f'owner={owner}')
+        except ObjectDoesNotExist as identifier:
+            return Response("User Not found", status=status.HTTP_404_NOT_FOUND)
+        try:
+            address = Address.objects.get(pk=id)
+            print(f'address object={address}')
+        except ObjectDoesNotExist as identifier:
+            return Response("User Not found", status=status.HTTP_404_NOT_FOUND)
+
+
+        if(not user.is_superuser):
+            address.city_id= request.data['city_id']
+            address.full_name=request.data['full_name']
+            address.address=request.data['address']
+            address.address_2=request.data['address_2']
+            address.zip_code=request.data['zip_code']
+            address.lat=request.data['lat']
+            address.long=request.data['long']
+            address.user=owner
+        else:
+            address.city_id= request.data['city_id']
+            address.full_name=request.data['full_name']
+            address.address=request.data['address']
+            address.address_2=request.data['address_2']
+            address.zip_code=request.data['zip_code']
+            address.lat=request.data['lat']
+            address.long=request.data['long']
+            address.user=owner
+
+        try:
+            address.save()
+        except IntegrityError as identifier:
+            return Response("This account already has addresses", status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_200_OK)
+
+class AddressDeleteView(DestroyAPIView):
+    serializer_class = AddressSerializer
+    queryset = Address.objects.all()
+    lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )

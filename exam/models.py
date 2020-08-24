@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from datetime import date
 
 EXAM_TYPE = (
     ('marathon', 'MARATHON'),
@@ -33,6 +34,13 @@ class Exam(models.Model):
     def __str__(self):
         return self.name
 
+class Subject(models.Model):
+    name = models.CharField(max_length=255)
+    exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
 
 class Question(models.Model):
     img = models.URLField(blank=True)
@@ -50,7 +58,7 @@ class Question(models.Model):
     answer = models.IntegerField(blank=False)
     true_false = models.BooleanField(default=False)
     fill_blank = models.BooleanField(default=False)
-    exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE)
+    subject = models.ForeignKey(to=Subject, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.question
@@ -81,3 +89,19 @@ class Answered(models.Model):
 
     class Meta:
         verbose_name_plural = "Answered"
+
+class Address(models.Model):
+    city_id = models.IntegerField(blank=False)
+    full_name = models.CharField(max_length=191)
+    address = models.CharField(max_length=191)
+    address_2 = models.CharField(max_length=191)
+    zip_code = models.CharField(max_length=191)
+    lat = models.CharField(max_length=191)
+    long = models.CharField(max_length=191)
+    deleted_at = models.DateField(default=date.today)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.full_name
+    class Meta:
+        verbose_name_plural = "Addresses"

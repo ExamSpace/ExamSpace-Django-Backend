@@ -1,10 +1,15 @@
 from rest_framework import serializers
-from .models import Exam, Question, Enrollment, Started, Answered
+from .models import Exam, Question, Enrollment, Started, Answered, Subject,Address
 
 
 class ExamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Exam
+        fields = '__all__'
+
+class SubjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subject
         fields = '__all__'
 
 
@@ -31,3 +36,8 @@ class AnsweredSerializer(serializers.ModelSerializer):
 
     # def save(self):
      #   return super
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = '__all__'
