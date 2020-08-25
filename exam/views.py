@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from .models import Exam, Question, Enrollment, Answered, Started, Cities, Bloodgroup, Countries, Currencies
-from .serializers import ExamSerializer, QuestionSerializer, EnrollmentSerializer, StartedSerializer, AnsweredSerializer, CitiesSerializer, BloodgroupSerializer, CountriesSerializer, CurrenciesSerializer
+from .serializers import ExamSerializer, QuestionSerializer, EnrollmentSerializer, StartedSerializer, AnsweredSerializer, CitiesSerializer, BloodgroupSerializer, CountriesSerializer, CurrenciesSerializer, AnsweredWithCorrectAnswerSerializer
 
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView, CreateAPIView
 from rest_framework import permissions
@@ -103,6 +103,7 @@ class EnrollMentView(GenericAPIView):
 #         except ObjectDoesNotExist as identifier:
 #             return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)
 
+
 class StartedView(GenericAPIView):
     def post(self, request, id=None):
         # check if user present in the request
@@ -128,6 +129,7 @@ class StartedView(GenericAPIView):
 
         return Response(status=status.HTTP_200_OK)
 
+
 class AnsweredView(GenericAPIView):
     permission_classes = (IsAdminOrEnrolled,)
 
@@ -148,8 +150,8 @@ class AnsweredView(GenericAPIView):
 
         serializer = AnsweredWithCorrectAnswerSerializer(obj)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
-        
-        
+
+
 class AnsweredListVew(ListCreateAPIView):
     permission_classes = (IsAdminOrEnrolled,)
     serializer_class = AnsweredSerializer
@@ -172,7 +174,8 @@ class AnsweredListVew(ListCreateAPIView):
         serializer = AnsweredSerializer(query_set, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
-        
+
+
 class CitiesListView(ListCreateAPIView):
     serializer_class = CitiesSerializer
     queryset = Cities.objects.all()
@@ -184,6 +187,7 @@ class CitiesDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Cities.objects.all()
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
+
 
 class BloodgroupListView(ListCreateAPIView):
     serializer_class = BloodgroupSerializer
@@ -197,6 +201,7 @@ class BloodgroupDetailView(RetrieveUpdateDestroyAPIView):
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
 
+
 class CountriesListView(ListCreateAPIView):
     serializer_class = CountriesSerializer
     queryset = Countries.objects.all()
@@ -208,6 +213,7 @@ class CountriesDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Countries.objects.all()
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
+
 
 class CurrenciesListView(ListCreateAPIView):
     serializer_class = CurrenciesSerializer
