@@ -1,4 +1,8 @@
 from rest_framework import serializers
+from .models import Exam, Question, Enrollment, Started, Answered
+from django.db import IntegrityError
+from rest_framework.response import Response
+from rest_framework import status
 from .models import Exam, Question, Enrollment, Started, Answered, Cities, Bloodgroup, Countries, Currencies
 
 
@@ -30,10 +34,37 @@ class StartedSerializer(serializers.ModelSerializer):
 class AnsweredSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answered
-        fields = []
+        fields = '__all__'
+        extra_kwargs = {'user': {'read_only': True}}
 
-    # def save(self):
-     #   return super
+    def validate(self, data):
+        question = data['question']
+        if Answered.objects.filter(user=self.context["request"].user, question=question).exists():
+            raise serializers.ValidationError(
+                "You have already answered this question")
+        return data
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        obj = Answered.objects.create(**validated_data, user=user)
+        obj.save()
+        return obj
+
+
+class CorrectAnswerField(serializers.RelatedField):
+    def to_representation(self, value):
+        return '%d' % (value.answer)
+
+
+class AnsweredWithCorrectAnswerSerializer(serializers.ModelSerializer):
+    question = serializers.PrimaryKeyRelatedField(
+        queryset=Question.objects.all())
+    correct_answer = serializers.IntegerField(
+        source='question.answer', read_only=True)
+
+    class Meta:
+        model = Answered
+        fields = ['question', 'correct_answer', 'answer']
 
 
 class CitiesSerializer(serializers.ModelSerializer):

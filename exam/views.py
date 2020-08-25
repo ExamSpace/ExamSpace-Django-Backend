@@ -128,16 +128,51 @@ class StartedView(GenericAPIView):
 
         return Response(status=status.HTTP_200_OK)
 
-class AnsweredView(CreateAPIView):
+class AnsweredView(GenericAPIView):
+    permission_classes = (IsAdminOrEnrolled,)
+
+    def post(self, request, examId=None, qid=None, option=None):
+        user = request.user
+        # check if question id exists by looing into Answered table
+        try:
+            question = Question.objects.get(pk=qid)
+        except ObjectDoesNotExist as identifier:
+            return Response("Not found", status=status.HTTP_404_NOT_FOUND)
+
+        obj = Answered(question=question, user=user, answer=option)
+
+        try:
+            obj.save()
+        except IntegrityError as identifier:
+            return Response("You already answered this question", status=status.HTTP_200_OK)
+
+        serializer = AnsweredWithCorrectAnswerSerializer(obj)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+        
+        
+class AnsweredListVew(ListCreateAPIView):
+    permission_classes = (IsAdminOrEnrolled,)
     serializer_class = AnsweredSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
-    def perform_create(self, serializer):
-        option=self.kwargs['option']
-        qid=self.kwargs['qid']
-        question = Question.objects.get(pk=qid)      
-        serializer.save(question=question, answer=option)
+    def post(self, request, *args, **kwargs):
+        is_many = isinstance(request.data, list)
 
+        serializer = self.get_serializer(
+            data=request.data, many=True)
+        if serializer.is_valid():
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        query_set = Answered.objects.filter(user=user)
+        serializer = AnsweredSerializer(query_set, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
 class CitiesListView(ListCreateAPIView):
     serializer_class = CitiesSerializer
     queryset = Cities.objects.all()

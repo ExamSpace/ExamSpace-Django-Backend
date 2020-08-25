@@ -30,9 +30,6 @@ class Exam(models.Model):
         max_length=50, choices=EXAM_TYPE, default='marathon')
     title_image_url = models.URLField(blank=True)
 
-    def __str__(self):
-        return self.name
-
 
 class Question(models.Model):
     img = models.URLField(blank=True)
@@ -75,8 +72,10 @@ class Started(models.Model):
 
 class Answered(models.Model):   
     question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
-    answer = models.IntegerField(default=0, unique=True)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    answer = models.IntegerField(default=0)
     class Meta:
+        unique_together = [['question', 'user']]
         verbose_name_plural = "Answered"
 
 class Cities(models.Model):
