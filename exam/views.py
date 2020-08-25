@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
-from .models import Exam, Question, Enrollment, Answered, Started
-from .serializers import ExamSerializer, QuestionSerializer, EnrollmentSerializer, StartedSerializer, AnsweredSerializer, AnsweredWithCorrectAnswerSerializer
+from .models import Exam, Question, Enrollment, Answered, Started, Cities, Bloodgroup, Countries, Currencies
+from .serializers import ExamSerializer, QuestionSerializer, EnrollmentSerializer, StartedSerializer, AnsweredSerializer, CitiesSerializer, BloodgroupSerializer, CountriesSerializer, CurrenciesSerializer
 
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView, CreateAPIView
 from rest_framework import permissions
@@ -9,8 +9,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.utils import IntegrityError
-from rest_framework.mixins import CreateModelMixin, ListModelMixin
-from rest_framework.viewsets import GenericViewSet
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
@@ -105,18 +103,6 @@ class EnrollMentView(GenericAPIView):
 #         except ObjectDoesNotExist as identifier:
 #             return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)
 
-
-class AnsweredView(CreateAPIView):
-    serializer_class = AnsweredSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-
-    def perform_create(self, serializer):
-        option = self.kwargs['option']
-        qid = self.kwargs['qid']
-        question = Question.objects.get(pk=qid)
-        serializer.save(question=question, answer=option)
-
-
 class StartedView(GenericAPIView):
     def post(self, request, id=None):
         # check if user present in the request
@@ -142,7 +128,6 @@ class StartedView(GenericAPIView):
 
         return Response(status=status.HTTP_200_OK)
 
-
 class AnsweredView(GenericAPIView):
     permission_classes = (IsAdminOrEnrolled,)
 
@@ -163,8 +148,8 @@ class AnsweredView(GenericAPIView):
 
         serializer = AnsweredWithCorrectAnswerSerializer(obj)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
-
-
+        
+        
 class AnsweredListVew(ListCreateAPIView):
     permission_classes = (IsAdminOrEnrolled,)
     serializer_class = AnsweredSerializer
@@ -187,3 +172,51 @@ class AnsweredListVew(ListCreateAPIView):
         serializer = AnsweredSerializer(query_set, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+        
+class CitiesListView(ListCreateAPIView):
+    serializer_class = CitiesSerializer
+    queryset = Cities.objects.all()
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+
+
+class CitiesDetailView(RetrieveUpdateDestroyAPIView):
+    serializer_class = CitiesSerializer
+    queryset = Cities.objects.all()
+    lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )
+
+class BloodgroupListView(ListCreateAPIView):
+    serializer_class = BloodgroupSerializer
+    queryset = Bloodgroup.objects.all()
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+
+
+class BloodgroupDetailView(RetrieveUpdateDestroyAPIView):
+    serializer_class = BloodgroupSerializer
+    queryset = Bloodgroup.objects.all()
+    lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )
+
+class CountriesListView(ListCreateAPIView):
+    serializer_class = CountriesSerializer
+    queryset = Countries.objects.all()
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+
+
+class CountriesDetailView(RetrieveUpdateDestroyAPIView):
+    serializer_class = CountriesSerializer
+    queryset = Countries.objects.all()
+    lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )
+
+class CurrenciesListView(ListCreateAPIView):
+    serializer_class = CurrenciesSerializer
+    queryset = Currencies.objects.all()
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+
+
+class CurrenciesDetailView(RetrieveUpdateDestroyAPIView):
+    serializer_class = CurrenciesSerializer
+    queryset = Currencies.objects.all()
+    lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )

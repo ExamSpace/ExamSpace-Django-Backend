@@ -3,6 +3,7 @@ from .models import Exam, Question, Enrollment, Started, Answered
 from django.db import IntegrityError
 from rest_framework.response import Response
 from rest_framework import status
+from .models import Exam, Question, Enrollment, Started, Answered, Cities, Bloodgroup, Countries, Currencies
 
 
 class ExamSerializer(serializers.ModelSerializer):
@@ -64,3 +65,23 @@ class AnsweredWithCorrectAnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answered
         fields = ['question', 'correct_answer', 'answer']
+
+
+class CitiesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cities
+        fields = '__all__'   
+
+class BloodgroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bloodgroup
+        fields = '__all__' 
+
+class CountriesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Countries
+        fields = '__all__'                   
+class CurrenciesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Currencies
+        fields = '__all__' 
