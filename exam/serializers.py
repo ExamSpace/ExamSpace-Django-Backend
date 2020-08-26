@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Exam, Question, Enrollment, Started, Answered, Subject,Address
+from .models import *
 
 
 class ExamSerializer(serializers.ModelSerializer):
@@ -40,4 +40,19 @@ class AnsweredSerializer(serializers.ModelSerializer):
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
+        fields = '__all__'
+
+class ConfigurationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Configuration
+        fields = '__all__'
+
+class ContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact
+        fields = '__all__'
+
+class FeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
         fields = '__all__'

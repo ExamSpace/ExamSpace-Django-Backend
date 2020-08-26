@@ -23,7 +23,7 @@ class CustomCreateView(GenericAPIView):
                     continue
                 mydictionary[field]=request.data[field]
         if(not user.is_superuser):
-            mydictionary['user']=user
+            mydictionary['user']=User.objects.get(id=request.data['user'])
         else:
             mydictionary['user']=User.objects.get(id=request.data['user'])
         
@@ -69,9 +69,13 @@ class CustomUpdateView(GenericAPIView):
             obj.user=user
         else:
             #else sets it to id input by admin
-            obj.user=User.objects.get(id=request.data['user'])
+            if 'user' in request.data.keys(): 
+                obj.user=User.objects.get(id=request.data['user'])
         
 
-        obj.save()
+        try:
+            obj.save()
+        except IntegrityError as identifier:
+            return Response("Data already Exists", status=status.HTTP_200_OK)
 
         return Response("Fields updated",status=status.HTTP_200_OK)

@@ -201,7 +201,6 @@ class AnsweredView(GenericAPIView):
         return Response(status=status.HTTP_200_OK)
 
 
-
 class AddressCreateView(CustomCreateView):
     serializer_class=AddressSerializer
     myClass=Address
@@ -219,5 +218,67 @@ class AddressRetrieveView(RetrieveAPIView):
 class AddressDeleteView(DestroyAPIView):
     serializer_class = AddressSerializer
     queryset = Address.objects.all()
+    lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )
+
+
+class ConfigurationCreateView(CustomCreateView):
+    serializer_class=ConfigurationSerializer
+    myClass=Configuration
+
+class ConfigurationUpdateView(CustomUpdateView):
+    serializer_class=ConfigurationSerializer
+    myClass=Configuration 
+
+class ConfigurationRetrieveView(RetrieveAPIView):
+    serializer_class = ConfigurationSerializer
+    queryset = Configuration.objects.all()
+    lookup_field = "id"
+
+
+class ConfigurationDeleteView(DestroyAPIView):
+    serializer_class = ConfigurationSerializer
+    queryset = Configuration.objects.all()
+    lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )
+
+
+class ContactCreateView(CustomCreateView):
+    serializer_class=ContactSerializer
+    myClass=Contact
+
+class ContactUpdateView(CustomUpdateView):
+    serializer_class=ContactSerializer
+    myClass=Contact 
+
+class ContactRetrieveView(RetrieveAPIView):
+    serializer_class = ContactSerializer
+    queryset = Contact.objects.all()
+    lookup_field = "id"
+
+
+class ContactDeleteView(DestroyAPIView):
+    serializer_class = ContactSerializer
+    queryset = Contact.objects.all()
+    lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )
+
+class FeedbackCreateView(CustomCreateView):
+    serializer_class=FeedbackSerializer
+    myClass=Feedback
+
+class FeedbackUpdateView(CustomUpdateView):
+    serializer_class=FeedbackSerializer
+    myClass=Feedback 
+
+class FeedbackRetrieveView(RetrieveAPIView):
+    serializer_class = FeedbackSerializer
+    queryset = Feedback.objects.all()
+    lookup_field = "id"
+
+
+class FeedbackDeleteView(DestroyAPIView):
+    serializer_class = FeedbackSerializer
+    queryset = Feedback.objects.all()
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )

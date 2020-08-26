@@ -105,3 +105,51 @@ class Address(models.Model):
         return self.full_name
     class Meta:
         verbose_name_plural = "Addresses"
+
+
+class Configuration(models.Model):
+    name = models.CharField(max_length=255)
+    organization_name = models.CharField(max_length=255)
+    domain_name = models.CharField(max_length=255)
+    email = models.CharField(max_length=100)
+    meta_title = models.TextField(blank=False)
+    meta_desc = models.TextField(blank=False)
+    timezone = models.CharField(max_length=100)
+    author = models.CharField(max_length=255)
+    sms = models.BooleanField(default=False)
+    email_notification = models.BooleanField(default=False)
+    guest_login = models.BooleanField(default=False)
+    front_end = models.BooleanField(default=False)
+    slides = models.SmallIntegerField(blank=False)
+    translate = models.SmallIntegerField(default=0)
+    paid_exam = models.SmallIntegerField(default=1)
+    leader_board = models.BooleanField(default=True)
+    contact = models.TextField(blank=False)
+    photo = models.CharField(max_length=100)
+    created_at = models.DateField(default=date.today)
+    modified_at = models.DateField(default=date.today)
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+class Contact(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.CharField(max_length=100)
+    message = models.TextField(max_length=5000)
+    created_at = models.DateField(default=date.today)
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+class Feedback(models.Model):
+    customer_id = models.IntegerField(blank=False)
+    message = models.TextField()
+    status = models.SmallIntegerField(default=0)
+    created_at = models.DateField(default=date.today)
+    updated_at = models.DateField(default=date.today)
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user

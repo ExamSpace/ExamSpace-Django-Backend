@@ -19,6 +19,16 @@ urlpatterns = [
     path('address/new', AddressCreateView.as_view()),
     path('address/update/<int:id>', AddressUpdateView.as_view()),
     path('address/delete/<int:id>', AddressDeleteView.as_view()),
-    
-    
+    path('config/<int:id>', ConfigurationRetrieveView.as_view()),
+    path('config/new', ConfigurationCreateView.as_view()),
+    path('config/update/<int:id>', ConfigurationUpdateView.as_view()),
+    path('config/delete/<int:id>', ConfigurationDeleteView.as_view()),
+    path('contact/<int:id>', ContactRetrieveView.as_view()),
+    path('contact/new', ContactCreateView.as_view()),
+    path('contact/update/<int:id>', ContactUpdateView.as_view()),
+    path('contact/delete/<int:id>', ContactDeleteView.as_view()),
+    path('feedback/<int:id>', FeedbackRetrieveView.as_view()),
+    path('feedback/new', FeedbackCreateView.as_view()),
+    path('feedback/update/<int:id>', FeedbackUpdateView.as_view()),
+    path('feedback/delete/<int:id>', FeedbackDeleteView.as_view()),
 ]
