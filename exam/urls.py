@@ -33,6 +33,10 @@ urlpatterns = [
     path('currencies/<int:id>', CurrenciesRetrieveView.as_view()),
     path('currencies/new', CurrenciesCreateView.as_view()),
     path('currencies/update/<int:id>', CurrenciesUpdateView.as_view()),
-    path('currencies/delete/<int:id>', CurrenciesDeleteView.as_view()),    
+    path('currencies/delete/<int:id>', CurrenciesDeleteView.as_view()),
+    path('social/<int:id>', SocialRetrieveView.as_view()),
+    path('social/new', SocialCreateView.as_view()),
+    path('social/update/<int:id>', SocialUpdateView.as_view()),
+    path('social/delete/<int:id>', SocialDeleteView.as_view()),        
     
 ]

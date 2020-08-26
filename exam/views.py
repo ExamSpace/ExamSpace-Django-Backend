@@ -287,4 +287,24 @@ class CurrenciesDeleteView(DestroyAPIView):
     serializer_class = CurrenciesSerializer
     queryset = Currencies.objects.all()
     lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )
+
+class SocialCreateView(CustomCreateView):
+    serializer_class=SocialSerializer
+    myClass=Social
+
+class SocialUpdateView(CustomUpdateView):
+    serializer_class=SocialSerializer
+    myClass=Social  
+
+class SocialRetrieveView(RetrieveAPIView):
+    serializer_class = SocialSerializer
+    queryset = Social.objects.all()
+    lookup_field = "id"
+
+
+class SocialDeleteView(DestroyAPIView):
+    serializer_class = SocialSerializer
+    queryset = Social.objects.all()
+    lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )            

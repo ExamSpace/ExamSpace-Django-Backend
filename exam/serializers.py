@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Exam, Question, Enrollment, Started, Answered, Subject,Address, Cities, Bloodgroup, Countries, Currencies
+from .models import Exam, Question, Enrollment, Started, Answered, Subject,Address, Cities, Bloodgroup, Countries, Currencies, Social
 
 
 class ExamSerializer(serializers.ModelSerializer):
@@ -59,4 +59,9 @@ class CountriesSerializer(serializers.ModelSerializer):
 class CurrenciesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Currencies
-        fields = '__all__'  
+        fields = '__all__' 
+
+class SocialSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Social
+        fields = '__all__'          

@@ -155,4 +155,15 @@ class Currencies(models.Model):
 
     def __str__(self):
         return self.title
-       
+
+class Social(models.Model):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    social_name = models.CharField(max_length=255)
+    social_url = models.CharField(max_length=255)
+    social_icon = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name_plural = "Socials"
+
+    def __str__(self):
+        return self.social_name
