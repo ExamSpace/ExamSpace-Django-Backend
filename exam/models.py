@@ -99,7 +99,7 @@ class Address(models.Model):
     lat = models.CharField(max_length=191)
     long = models.CharField(max_length=191)
     deleted_at = models.DateField(default=date.today)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.full_name

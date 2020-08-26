@@ -208,50 +208,33 @@ class AnsweredView(GenericAPIView):
 
 class AddressCreateView(GenericAPIView):
     serializer_class=AddressSerializer
-    def post(self, request, id=None):
+    def post(self, request):
         
         # check if user present in the request
         user = request.user
         if not user.is_authenticated:
             return Response("You are not logged in", status=status.HTTP_401_UNAUTHORIZED)
 
-        if not id:
-            return Response("Invalid request", status=status.HTTP_400_BAD_REQUEST)
-
-        # check if exam id exists by looing into Started table
-        try:
-            owner = User.objects.get(pk=id)
-        except ObjectDoesNotExist as identifier:
-            return Response("User Not found", status=status.HTTP_404_NOT_FOUND)
-
-
+        address={}
+        for field in request.data:
+                if(field=='user' or field=='deleted_at'):
+                    continue
+                address[field]=request.data[field]
         if(not user.is_superuser):
-            obj = Address(
-            city_id= request.data['city_id'],
-            full_name=request.data['full_name'],
-            address=request.data['address'],
-            address_2=request.data['address_2'],
-            zip_code=request.data['zip_code'],
-            lat=request.data['lat'],
-            long=request.data['long'],
-            user=user)
+            address['user']=user
         else:
-            obj = Address(
-            city_id= request.data['city_id'],
-            full_name=request.data['full_name'],
-            address=request.data['address'],
-            address_2=request.data['address_2'],
-            zip_code=request.data['zip_code'],
-            lat=request.data['lat'],
-            long=request.data['long'],
-            user=owner)
+            address['user']=User.objects.get(id=request.data['user'])
+        
+        obj = Address(**address)
+
+        
 
         try:
             obj.save()
         except IntegrityError as identifier:
             return Response("This account already has addresses", status=status.HTTP_200_OK)
 
-        return Response(status=status.HTTP_200_OK)
+        return Response("Address Created", status=status.HTTP_200_OK)
         
 
 class AddressRetrieveView(RetrieveAPIView):
@@ -261,57 +244,40 @@ class AddressRetrieveView(RetrieveAPIView):
 
 class AddressUpdateView(GenericAPIView):
     serializer_class = AddressSerializer
-    def put(self, request,userId=None ,id=None):
+    def put(self, request ,id=None):
         
         # check if user present in the request
         user = request.user
-        # if not user.is_authenticated:
-        #     return Response("You are not logged in", status=status.HTTP_401_UNAUTHORIZED)
+        if not user.is_authenticated:
+            return Response("You are not logged in", status=status.HTTP_401_UNAUTHORIZED)
 
         if not id:
             return Response("Invalid request", status=status.HTTP_400_BAD_REQUEST)
 
-        if not userId:
-            return Response("Invalid request", status=status.HTTP_400_BAD_REQUEST)
 
-        # check if exam id exists by looing into Started table
-        try:
-            owner = User.objects.get(pk=self.kwargs['userId'])
-            print(f'owner={owner}')
-        except ObjectDoesNotExist as identifier:
-            return Response("User Not found", status=status.HTTP_404_NOT_FOUND)
         try:
             address = Address.objects.get(pk=id)
-            print(f'address object={address}')
         except ObjectDoesNotExist as identifier:
             return Response("User Not found", status=status.HTTP_404_NOT_FOUND)
 
+        #loops though request.data and address object and sets them accordingly
+        #skips loop if field is equal to user or datefield or empty
+        for field in request.data:
+                if(field=='user' or field=='deleted_at' or not request.data[field]):
+                    continue
+                address.__dict__[field]=request.data[field]
 
-        if(not user.is_superuser):
-            address.city_id= request.data['city_id']
-            address.full_name=request.data['full_name']
-            address.address=request.data['address']
-            address.address_2=request.data['address_2']
-            address.zip_code=request.data['zip_code']
-            address.lat=request.data['lat']
-            address.long=request.data['long']
-            address.user=owner
+        #if user is not admin, sets address's foreign key 'user' to current logged in user
+        if(not user.is_superuser):           
+            address.user=user
         else:
-            address.city_id= request.data['city_id']
-            address.full_name=request.data['full_name']
-            address.address=request.data['address']
-            address.address_2=request.data['address_2']
-            address.zip_code=request.data['zip_code']
-            address.lat=request.data['lat']
-            address.long=request.data['long']
-            address.user=owner
+            #else sets it to id input by admin
+            address.user=User.objects.get(id=request.data['user'])
+        
 
-        try:
-            address.save()
-        except IntegrityError as identifier:
-            return Response("This account already has addresses", status=status.HTTP_200_OK)
+        address.save()
 
-        return Response(status=status.HTTP_200_OK)
+        return Response("Fields updated",status=status.HTTP_200_OK)
 
 class AddressDeleteView(DestroyAPIView):
     serializer_class = AddressSerializer

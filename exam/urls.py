@@ -16,8 +16,8 @@ urlpatterns = [
     path('<int:id>/enroll', EnrollMentView.as_view()),
     path('<int:examId>/<int:subjectId>/question/<int:qid>/answer/selected_option=<int:option>', AnsweredView.as_view()),
     path('address/<int:id>', AddressRetrieveView.as_view()),
-    path('address/user/<int:id>/new', AddressCreateView.as_view()),
-    path('address/user/<int:userId>/update/<int:id>', AddressUpdateView.as_view()),
+    path('address/new', AddressCreateView.as_view()),
+    path('address/update/<int:id>', AddressUpdateView.as_view()),
     path('address/delete/<int:id>', AddressDeleteView.as_view()),
     
     
