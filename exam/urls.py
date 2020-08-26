@@ -1,5 +1,4 @@
 from django.urls import path
-# from .views import ExamsListView, ExamDetailView, EnrollMentView, QuestionsListView, QuestionDetailView, StartedView, AnsweredView, SubjectListView
 from .views import *
 
 urlpatterns = [
@@ -18,7 +17,22 @@ urlpatterns = [
     path('address/<int:id>', AddressRetrieveView.as_view()),
     path('address/new', AddressCreateView.as_view()),
     path('address/update/<int:id>', AddressUpdateView.as_view()),
-    path('address/delete/<int:id>', AddressDeleteView.as_view()),
-    
+    path('address/delete/<int:id>', AddressDeleteView.as_view()),  
+    path('cities/<int:id>', CitiesRetrieveView.as_view()),
+    path('cities/new', CitiesCreateView.as_view()),
+    path('cities/update/<int:id>', CitiesUpdateView.as_view()),
+    path('cities/delete/<int:id>', CitiesDeleteView.as_view()),    
+    path('bloodgroup/<int:id>', BloodgroupRetrieveView.as_view()),
+    path('bloodgroup/new', BloodgroupCreateView.as_view()),
+    path('bloodgroup/update/<int:id>', BloodgroupUpdateView.as_view()),
+    path('bloodgroup/delete/<int:id>', BloodgroupDeleteView.as_view()),
+    path('countries/<int:id>', CountriesRetrieveView.as_view()),
+    path('countries/new', CountriesCreateView.as_view()),
+    path('countries/update/<int:id>', CountriesUpdateView.as_view()),
+    path('countries/delete/<int:id>', CountriesDeleteView.as_view()),
+    path('currencies/<int:id>', CurrenciesRetrieveView.as_view()),
+    path('currencies/new', CurrenciesCreateView.as_view()),
+    path('currencies/update/<int:id>', CurrenciesUpdateView.as_view()),
+    path('currencies/delete/<int:id>', CurrenciesDeleteView.as_view()),    
     
 ]
