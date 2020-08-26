@@ -217,7 +217,7 @@ class AddressCreateView(GenericAPIView):
 
         address={}
         for field in request.data:
-                if(field=='user' or field=='deleted_at'):
+                if(field=='user' or '_at' in field):
                     continue
                 address[field]=request.data[field]
         if(not user.is_superuser):
@@ -263,7 +263,7 @@ class AddressUpdateView(GenericAPIView):
         #loops though request.data and address object and sets them accordingly
         #skips loop if field is equal to user or datefield or empty
         for field in request.data:
-                if(field=='user' or field=='deleted_at' or not request.data[field]):
+                if(field=='user' or '_at' in field or not request.data[field]):
                     continue
                 address.__dict__[field]=request.data[field]
 
