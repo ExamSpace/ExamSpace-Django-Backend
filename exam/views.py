@@ -1,7 +1,4 @@
 from django.shortcuts import render
-
-# from .models import Exam, Question, Enrollment, Answered, Started, Subject
-# from .serializers import ExamSerializer, QuestionSerializer, EnrollmentSerializer, StartedSerializer, AnsweredSerializer, SubjectSerializer
 from .models import *
 from .serializers import *
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView, CreateAPIView, RetrieveUpdateAPIView, DestroyAPIView, ListAPIView, RetrieveAPIView
@@ -10,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.utils import IntegrityError
-
+from .CustomViews import *
 
 class IsAdminOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -205,79 +202,19 @@ class AnsweredView(GenericAPIView):
 
 
 
-
-class AddressCreateView(GenericAPIView):
+class AddressCreateView(CustomCreateView):
     serializer_class=AddressSerializer
-    def post(self, request):
-        
-        # check if user present in the request
-        user = request.user
-        if not user.is_authenticated:
-            return Response("You are not logged in", status=status.HTTP_401_UNAUTHORIZED)
+    myClass=Address
 
-        address={}
-        for field in request.data:
-                if(field=='user' or '_at' in field):
-                    continue
-                address[field]=request.data[field]
-        if(not user.is_superuser):
-            address['user']=user
-        else:
-            address['user']=User.objects.get(id=request.data['user'])
-        
-        obj = Address(**address)
-
-        
-
-        try:
-            obj.save()
-        except IntegrityError as identifier:
-            return Response("This account already has addresses", status=status.HTTP_200_OK)
-
-        return Response("Address Created", status=status.HTTP_200_OK)
-        
+class AddressUpdateView(CustomUpdateView):
+    serializer_class=AddressSerializer
+    myClass=Address  
 
 class AddressRetrieveView(RetrieveAPIView):
     serializer_class = AddressSerializer
     queryset = Address.objects.all()
     lookup_field = "id"
 
-class AddressUpdateView(GenericAPIView):
-    serializer_class = AddressSerializer
-    def put(self, request ,id=None):
-        
-        # check if user present in the request
-        user = request.user
-        if not user.is_authenticated:
-            return Response("You are not logged in", status=status.HTTP_401_UNAUTHORIZED)
-
-        if not id:
-            return Response("Invalid request", status=status.HTTP_400_BAD_REQUEST)
-
-
-        try:
-            address = Address.objects.get(pk=id)
-        except ObjectDoesNotExist as identifier:
-            return Response("User Not found", status=status.HTTP_404_NOT_FOUND)
-
-        #loops though request.data and address object and sets them accordingly
-        #skips loop if field is equal to user or datefield or empty
-        for field in request.data:
-                if(field=='user' or '_at' in field or not request.data[field]):
-                    continue
-                address.__dict__[field]=request.data[field]
-
-        #if user is not admin, sets address's foreign key 'user' to current logged in user
-        if(not user.is_superuser):           
-            address.user=user
-        else:
-            #else sets it to id input by admin
-            address.user=User.objects.get(id=request.data['user'])
-        
-
-        address.save()
-
-        return Response("Fields updated",status=status.HTTP_200_OK)
 
 class AddressDeleteView(DestroyAPIView):
     serializer_class = AddressSerializer
