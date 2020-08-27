@@ -150,6 +150,3 @@ class Feedback(models.Model):
     created_at = models.DateField(default=date.today)
     updated_at = models.DateField(default=date.today)
     user = models.OneToOneField(to=User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.user
