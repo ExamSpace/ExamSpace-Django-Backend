@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from datetime import date
 
 EXAM_TYPE = (
     ('marathon', 'MARATHON'),
@@ -31,6 +32,17 @@ class Exam(models.Model):
     title_image_url = models.URLField(blank=True)
 
 
+    def __str__(self):
+        return self.name
+
+class Subject(models.Model):
+    name = models.CharField(max_length=255)
+    exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
 class Question(models.Model):
     img = models.URLField(blank=True)
     question = models.TextField(blank=False)
@@ -47,7 +59,7 @@ class Question(models.Model):
     answer = models.IntegerField(blank=False)
     true_false = models.BooleanField(default=False)
     fill_blank = models.BooleanField(default=False)
-    exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE)
+    subject = models.ForeignKey(to=Subject, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.question
@@ -97,11 +109,72 @@ class Bloodgroup(models.Model):
     blood_group_name = models.CharField(max_length=255)
 
     class Meta:
-        verbose_name_plural = "Blood Group"    
+      verbose_name_plural = "Blood Group"    
 
     def __str__(self):
         return self.blood_group_name
+        
+class Address(models.Model):
+    city_id = models.IntegerField(blank=False)
+    full_name = models.CharField(max_length=191)
+    address = models.CharField(max_length=191)
+    address_2 = models.CharField(max_length=191)
+    zip_code = models.CharField(max_length=191)
+    lat = models.CharField(max_length=191)
+    long = models.CharField(max_length=191)
+    deleted_at = models.DateField(default=date.today)
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.full_name
+    class Meta:
+        verbose_name_plural = "Addresses"
+
+
+class Configuration(models.Model):
+    name = models.CharField(max_length=255)
+    organization_name = models.CharField(max_length=255)
+    domain_name = models.CharField(max_length=255)
+    email = models.CharField(max_length=100)
+    meta_title = models.TextField(blank=False)
+    meta_desc = models.TextField(blank=False)
+    timezone = models.CharField(max_length=100)
+    author = models.CharField(max_length=255)
+    sms = models.BooleanField(default=False)
+    email_notification = models.BooleanField(default=False)
+    guest_login = models.BooleanField(default=False)
+    front_end = models.BooleanField(default=False)
+    slides = models.SmallIntegerField(blank=False)
+    translate = models.SmallIntegerField(default=0)
+    paid_exam = models.SmallIntegerField(default=1)
+    leader_board = models.BooleanField(default=True)
+    contact = models.TextField(blank=False)
+    photo = models.CharField(max_length=100)
+    created_at = models.DateField(default=date.today)
+    modified_at = models.DateField(default=date.today)
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+class Contact(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.CharField(max_length=100)
+    message = models.TextField(max_length=5000)
+    created_at = models.DateField(default=date.today)
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+class Feedback(models.Model):
+    customer_id = models.IntegerField(blank=False)
+    message = models.TextField()
+    status = models.SmallIntegerField(default=0)
+    created_at = models.DateField(default=date.today)
+    updated_at = models.DateField(default=date.today)
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE)
+        
 class Countries(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
@@ -127,3 +200,4 @@ class Currencies(models.Model):
 
     def __str__(self):
         return self.title    
+

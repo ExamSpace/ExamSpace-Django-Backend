@@ -1,15 +1,13 @@
 from django.shortcuts import render
-
-from .models import Exam, Question, Enrollment, Answered, Started, Cities, Bloodgroup, Countries, Currencies
-from .serializers import ExamSerializer, QuestionSerializer, EnrollmentSerializer, StartedSerializer, AnsweredSerializer, CitiesSerializer, BloodgroupSerializer, CountriesSerializer, CurrenciesSerializer, AnsweredWithCorrectAnswerSerializer
-
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView, CreateAPIView
+from .models import *
+from .serializers import *
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView, CreateAPIView, RetrieveUpdateAPIView, DestroyAPIView, ListAPIView, RetrieveAPIView
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.utils import IntegrityError
-
+from .CustomViews import *
 
 class IsAdminOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -32,10 +30,15 @@ class IsAdminOrEnrolled(permissions.BasePermission):
         return super_user or enrolled
 
 
-class ExamsListView(ListCreateAPIView):
+class ExamsListView(ListAPIView):
     serializer_class = ExamSerializer
     queryset = Exam.objects.all()
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+
+class ExamCreateView(CreateAPIView):
+    serializer_class = ExamSerializer
+    queryset = Exam.objects.all()
+    permission_classes = (IsAdminOrReadOnly, )
 
 
 class ExamDetailView(RetrieveUpdateDestroyAPIView):
@@ -45,21 +48,53 @@ class ExamDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAdminOrReadOnly, )
 
 
-class QuestionsListView(ListCreateAPIView):
+class SubjectsListView(ListAPIView):
+    serializer_class = SubjectSerializer
+    def get_queryset(self):
+        examId = self.kwargs['examId']
+        return Subject.objects.filter(exam=examId)
+    permission_classes = (IsAdminOrEnrolled, )
+
+class SubjectCreateView(CreateAPIView):
+    serializer_class = SubjectSerializer
+    def get_queryset(self):
+        examId = self.kwargs['examId']
+        return Subject.objects.filter(exam=examId)
+    permission_classes = (IsAdminOrReadOnly, )
+
+
+class SubjectDetailView(RetrieveUpdateDestroyAPIView):
+    serializer_class = SubjectSerializer
+    def get_queryset(self):
+        examId = self.kwargs['examId']
+        return Subject.objects.filter(exam=examId)
+    lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )
+
+
+class QuestionsListView(ListAPIView):
     serializer_class = QuestionSerializer
     permission_classes = (IsAdminOrEnrolled,)
 
     def get_queryset(self):
-        examId = self.kwargs['examId']
-        return Question.objects.filter(exam=examId)
+        subjectId = self.kwargs['subjectId']
+        return Question.objects.filter(subject=subjectId)
+
+class QuestionCreateView(CreateAPIView):
+    serializer_class = QuestionSerializer
+    permission_classes = (IsAdminOrReadOnly,)
+
+    def get_queryset(self):
+        subjectId = self.kwargs['subjectId']
+        return Question.objects.filter(subject=subjectId)
 
 
 class QuestionDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = QuestionSerializer
 
     def get_queryset(self):
-        examId = self.kwargs['examId']
-        return Question.objects.filter(exam=examId)
+        subjectId = self.kwargs['subjectId']
+        return Question.objects.filter(subject=subjectId)
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
 
@@ -146,11 +181,95 @@ class AnsweredView(GenericAPIView):
         try:
             obj.save()
         except IntegrityError as identifier:
-            return Response("You already answered this question", status=status.HTTP_200_OK)
-
+            return Response("You already answered this question", status=status.HTTP_200_OK
+                            
         serializer = AnsweredWithCorrectAnswerSerializer(obj)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
+
+        return Response(status=status.HTTP_200_OK)
+
+
+class AddressCreateView(CustomCreateView):
+    serializer_class=AddressSerializer
+    myClass=Address
+
+class AddressUpdateView(CustomUpdateView):
+    serializer_class=AddressSerializer
+    myClass=Address  
+
+class AddressRetrieveView(RetrieveAPIView):
+    serializer_class = AddressSerializer
+    queryset = Address.objects.all()
+    lookup_field = "id"
+
+
+class AddressDeleteView(DestroyAPIView):
+    serializer_class = AddressSerializer
+    queryset = Address.objects.all()
+    lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )
+
+
+class ConfigurationCreateView(CustomCreateView):
+    serializer_class=ConfigurationSerializer
+    myClass=Configuration
+
+class ConfigurationUpdateView(CustomUpdateView):
+    serializer_class=ConfigurationSerializer
+    myClass=Configuration 
+
+class ConfigurationRetrieveView(RetrieveAPIView):
+    serializer_class = ConfigurationSerializer
+    queryset = Configuration.objects.all()
+    lookup_field = "id"
+
+
+class ConfigurationDeleteView(DestroyAPIView):
+    serializer_class = ConfigurationSerializer
+    queryset = Configuration.objects.all()
+    lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )
+
+class ContactCreateView(CustomCreateView):
+    serializer_class=ContactSerializer
+    myClass=Contact
+
+class ContactUpdateView(CustomUpdateView):
+    serializer_class=ContactSerializer
+    myClass=Contact 
+
+class ContactRetrieveView(RetrieveAPIView):
+    serializer_class = ContactSerializer
+    queryset = Contact.objects.all()
+    lookup_field = "id"
+
+
+class ContactDeleteView(DestroyAPIView):
+    serializer_class = ContactSerializer
+    queryset = Contact.objects.all()
+    lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )
+
+class FeedbackCreateView(CustomCreateView):
+    serializer_class=FeedbackSerializer
+    myClass=Feedback
+
+class FeedbackUpdateView(CustomUpdateView):
+    serializer_class=FeedbackSerializer
+    myClass=Feedback 
+
+class FeedbackRetrieveView(RetrieveAPIView):
+    serializer_class = FeedbackSerializer
+    queryset = Feedback.objects.all()
+    lookup_field = "id"
+
+
+class FeedbackDeleteView(DestroyAPIView):
+    serializer_class = FeedbackSerializer
+    queryset = Feedback.objects.all()
+    lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )
 
 class AnsweredListVew(ListCreateAPIView):
     permission_classes = (IsAdminOrEnrolled,)
@@ -187,8 +306,7 @@ class CitiesDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Cities.objects.all()
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
-
-
+   
 class BloodgroupListView(ListCreateAPIView):
     serializer_class = BloodgroupSerializer
     queryset = Bloodgroup.objects.all()
