@@ -181,14 +181,11 @@ class AnsweredView(GenericAPIView):
         try:
             obj.save()
         except IntegrityError as identifier:
-            return Response("You already answered this question", status=status.HTTP_200_OK
+            return Response("You already answered this question", status=status.HTTP_200_OK)
                             
-        serializer = AnsweredWithCorrectAnswerSerializer(obj)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
-
-
+        serializers = AnsweredWithCorrectAnswerSerializer(obj)
+        return Response(data=serializers.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_200_OK)
-
 
 class AddressCreateView(CustomCreateView):
     serializer_class=AddressSerializer
