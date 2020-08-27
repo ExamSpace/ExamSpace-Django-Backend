@@ -1,5 +1,4 @@
 from django.urls import path
-# from .views import ExamsListView, ExamDetailView, EnrollMentView, QuestionsListView, QuestionDetailView, StartedView, AnsweredView, SubjectListView
 from .views import *
 
 urlpatterns = [
@@ -14,7 +13,6 @@ urlpatterns = [
     path('<int:examId>/subject/<int:subjectId>/question/new', QuestionCreateView.as_view()),
     path('<int:id>/start', StartedView.as_view()),
     path('<int:id>/enroll', EnrollMentView.as_view()),
-    path('<int:examId>/<int:subjectId>/question/<int:qid>/answer/selected_option=<int:option>', AnsweredView.as_view()),
     path('address/<int:id>', AddressRetrieveView.as_view()),
     path('address/new', AddressCreateView.as_view()),
     path('address/update/<int:id>', AddressUpdateView.as_view()),
@@ -31,4 +29,20 @@ urlpatterns = [
     path('feedback/new', FeedbackCreateView.as_view()),
     path('feedback/update/<int:id>', FeedbackUpdateView.as_view()),
     path('feedback/delete/<int:id>', FeedbackDeleteView.as_view()),
+    path('<int:examId>/question/<int:qid>/answer/selected_option=<int:option>',
+         AnsweredView.as_view()),
+    path('<int:examId>/submit_answer_list', AnsweredListVew.as_view()),
+    path('<int:examId>/question/<int:qid>/answer/selected_option=<int:option>', AnsweredView.as_view()),
+    path('cities', CitiesListView.as_view()),
+    path('cities/<int:id>', CitiesDetailView.as_view()),
+    path('bloodgroup', BloodgroupListView.as_view()),
+    path('bloodgroup/<int:id>', BloodgroupDetailView.as_view()),
+    path('countries', CountriesListView.as_view()),
+    path('countries/<int:id>', CountriesDetailView.as_view()),
+    path('currencies', CurrenciesListView.as_view()),
+    path('currencies/<int:id>', CurrenciesDetailView.as_view()),
+  
 ]
+
+
+

@@ -31,6 +31,7 @@ class Exam(models.Model):
         max_length=50, choices=EXAM_TYPE, default='marathon')
     title_image_url = models.URLField(blank=True)
 
+
     def __str__(self):
         return self.name
 
@@ -75,21 +76,44 @@ class Enrollment(models.Model):
 class Started(models.Model):
     class Meta:
         unique_together = [['exam', 'owner']]
+        verbose_name_plural = "Started"
     exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE)
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
     started_at = models.DateTimeField(default=timezone.now)
 
-    class Meta:
-        verbose_name_plural = "Started"
 
-
-class Answered(models.Model):
+class Answered(models.Model):   
     question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
-    answer = models.IntegerField(default=0, unique=True)
-
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    answer = models.IntegerField(default=0)
     class Meta:
+        unique_together = [['question', 'user']]
         verbose_name_plural = "Answered"
 
+class Cities(models.Model):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    country_id = models.CharField(max_length=255)
+    state = models.CharField(max_length=255)
+    created = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        verbose_name_plural = "Cities"
+
+    def __str__(self):
+        return self.title
+
+class Bloodgroup(models.Model):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    blood_group_name = models.CharField(max_length=255)
+
+    class Meta:
+      verbose_name_plural = "Blood Group"    
+
+    def __str__(self):
+        return self.blood_group_name
+        
 class Address(models.Model):
     city_id = models.IntegerField(blank=False)
     full_name = models.CharField(max_length=191)
@@ -150,3 +174,30 @@ class Feedback(models.Model):
     created_at = models.DateField(default=date.today)
     updated_at = models.DateField(default=date.today)
     user = models.OneToOneField(to=User, on_delete=models.CASCADE)
+        
+class Countries(models.Model):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    country_code = models.CharField(max_length=255)
+    default_currency = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name_plural = "Countries"
+
+    def __str__(self):
+        return self.title        
+
+class Currencies(models.Model):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    code = models.CharField(max_length=255)
+    sign = models.CharField(max_length=255)
+    usd_conversion_amount = models.IntegerField()
+    expire_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        verbose_name_plural = "Currencies"
+
+    def __str__(self):
+        return self.title    
+

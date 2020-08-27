@@ -11,4 +11,8 @@ admin.site.register(Address)
 admin.site.register(Configuration)
 admin.site.register(Contact)
 admin.site.register(Feedback)
+admin.site.register(Cities)
+admin.site.register(Bloodgroup)
+admin.site.register(Countries)
+admin.site.register(Currencies)
 # Register your models here.
