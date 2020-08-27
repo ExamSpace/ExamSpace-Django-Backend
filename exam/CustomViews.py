@@ -14,8 +14,8 @@ class CustomCreateView(GenericAPIView):
         
         # check if user present in the request
         user = request.user
-        if not user.is_authenticated:
-            return Response("You are not logged in", status=status.HTTP_401_UNAUTHORIZED)
+        # if not user.is_authenticated:
+        #     return Response("You are not logged in", status=status.HTTP_401_UNAUTHORIZED)
 
         mydictionary={}
         for field in request.data:
@@ -23,11 +23,22 @@ class CustomCreateView(GenericAPIView):
                     continue
                 mydictionary[field]=request.data[field]
         if(not user.is_superuser):
-            mydictionary['user']=User.objects.get(id=request.data['user'])
+                mydictionary['user']=user
         else:
-            mydictionary['user']=User.objects.get(id=request.data['user'])
+            if(User.objects.filter(id=request.data['user']).exists()):
+                mydictionary['user']=User.objects.get(id=request.data['user'])
+            else:
+                return Response("User does not exist", status=status.HTTP_400_BAD_REQUEST)
         
         obj = self.myClass(**mydictionary)
+
+        for field in obj.__dict__:
+            if(field=='id' or field=='user_id'):
+                continue
+            if(not type(obj.__dict__[field]) == bool or '_at' in field):
+                if (not obj.__dict__[field]):
+                    return Response("Invalid request", status=status.HTTP_400_BAD_REQUEST)
+
 
         try:
             obj.save()
