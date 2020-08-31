@@ -15,4 +15,5 @@ admin.site.register(Cities)
 admin.site.register(Bloodgroup)
 admin.site.register(Countries)
 admin.site.register(Currencies)
+admin.site.register(Social)
 # Register your models here.

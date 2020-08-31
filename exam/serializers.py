@@ -138,4 +138,9 @@ class CountriesSerializer(serializers.ModelSerializer):
 class CurrenciesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Currencies
-        fields = '__all__' 
+        fields = '__all__'
+
+class SocialSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Social
+        fields = '__all__'                  
