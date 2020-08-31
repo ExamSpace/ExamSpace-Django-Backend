@@ -292,52 +292,102 @@ class AnsweredListVew(ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class CitiesListView(ListCreateAPIView):
+class CitiesCreateView(CustomCreateView):
+    serializer_class=CitiesSerializer
+    myClass=Cities
+
+class CitiesUpdateView(CustomUpdateView):
+    serializer_class=CitiesSerializer
+    myClass=Cities  
+
+class CitiesRetrieveView(RetrieveAPIView):
     serializer_class = CitiesSerializer
     queryset = Cities.objects.all()
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+    lookup_field = "id"
 
 
-class CitiesDetailView(RetrieveUpdateDestroyAPIView):
+class CitiesDeleteView(DestroyAPIView):
     serializer_class = CitiesSerializer
     queryset = Cities.objects.all()
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
-   
-class BloodgroupListView(ListCreateAPIView):
+
+class BloodgroupCreateView(CustomCreateView):
+    serializer_class=BloodgroupSerializer
+    myClass=Bloodgroup
+
+class BloodgroupUpdateView(CustomUpdateView):
+    serializer_class=BloodgroupSerializer
+    myClass=Bloodgroup  
+
+class BloodgroupRetrieveView(RetrieveAPIView):
     serializer_class = BloodgroupSerializer
     queryset = Bloodgroup.objects.all()
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+    lookup_field = "id"
 
 
-class BloodgroupDetailView(RetrieveUpdateDestroyAPIView):
+class BloodgroupDeleteView(DestroyAPIView):
     serializer_class = BloodgroupSerializer
     queryset = Bloodgroup.objects.all()
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
 
+class CountriesCreateView(CustomCreateView):
+    serializer_class=CountriesSerializer
+    myClass=Countries
 
-class CountriesListView(ListCreateAPIView):
+class CountriesUpdateView(CustomUpdateView):
+    serializer_class=CountriesSerializer
+    myClass=Countries  
+
+class CountriesRetrieveView(RetrieveAPIView):
     serializer_class = CountriesSerializer
     queryset = Countries.objects.all()
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+    lookup_field = "id"
 
 
-class CountriesDetailView(RetrieveUpdateDestroyAPIView):
+class CountriesDeleteView(DestroyAPIView):
     serializer_class = CountriesSerializer
     queryset = Countries.objects.all()
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
 
+class CurrenciesCreateView(CustomCreateView):
+    serializer_class=CurrenciesSerializer
+    myClass=Currencies
 
-class CurrenciesListView(ListCreateAPIView):
+class CurrenciesUpdateView(CustomUpdateView):
+    serializer_class=CurrenciesSerializer
+    myClass=Currencies  
+
+class CurrenciesRetrieveView(RetrieveAPIView):
     serializer_class = CurrenciesSerializer
     queryset = Currencies.objects.all()
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+    lookup_field = "id"
 
 
-class CurrenciesDetailView(RetrieveUpdateDestroyAPIView):
+class CurrenciesDeleteView(DestroyAPIView):
     serializer_class = CurrenciesSerializer
     queryset = Currencies.objects.all()
+    lookup_field = "id"
+    permission_classes = (IsAdminOrReadOnly, )
+
+class SocialCreateView(CustomCreateView):
+    serializer_class=SocialSerializer
+    myClass=Social
+
+class SocialUpdateView(CustomUpdateView):
+    serializer_class=SocialSerializer
+    myClass=Social  
+
+class SocialRetrieveView(RetrieveAPIView):
+    serializer_class = SocialSerializer
+    queryset = Social.objects.all()
+    lookup_field = "id"
+
+
+class SocialDeleteView(DestroyAPIView):
+    serializer_class = SocialSerializer
+    queryset = Social.objects.all()
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
