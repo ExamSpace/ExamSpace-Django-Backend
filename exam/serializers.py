@@ -37,28 +37,7 @@ class AnsweredSerializer(serializers.ModelSerializer):
         model = Answered
         fields = []                      
 
-    # def save(self):
-     #   return super
 
-class AddressSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Address
-        fields = '__all__'
-
-class ConfigurationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Configuration
-        fields = '__all__'
-
-class ContactSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Contact
-        fields = '__all__'
-
-class FeedbackSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Feedback
-        fields = '__all__'
 
 class ExamSerializer(serializers.ModelSerializer):
     class Meta:
@@ -72,11 +51,6 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = '__all__'
         extra_kwargs = {'answer': {'write_only': True}}
 
-
-class EnrollmentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Enrollment
-        fields = []
 
 
 class StartedSerializer(serializers.ModelSerializer):
@@ -119,28 +93,3 @@ class AnsweredWithCorrectAnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answered
         fields = ['question', 'correct_answer', 'answer']
-
-
-class CitiesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Cities
-        fields = '__all__'   
-
-class BloodgroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Bloodgroup
-        fields = '__all__' 
-
-class CountriesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Countries
-        fields = '__all__'                   
-class CurrenciesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Currencies
-        fields = '__all__'
-
-class SocialSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Social
-        fields = '__all__'                  
