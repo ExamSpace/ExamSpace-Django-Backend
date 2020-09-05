@@ -35,6 +35,7 @@ class ExamsListView(ListAPIView):
     queryset = Exam.objects.all()
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
+
 class ExamCreateView(CreateAPIView):
     serializer_class = ExamSerializer
     queryset = Exam.objects.all()
@@ -50,13 +51,16 @@ class ExamDetailView(RetrieveUpdateDestroyAPIView):
 
 class SubjectsListView(ListAPIView):
     serializer_class = SubjectSerializer
+
     def get_queryset(self):
         examId = self.kwargs['examId']
         return Subject.objects.filter(exam=examId)
     permission_classes = (IsAdminOrEnrolled, )
 
+
 class SubjectCreateView(CreateAPIView):
     serializer_class = SubjectSerializer
+
     def get_queryset(self):
         examId = self.kwargs['examId']
         return Subject.objects.filter(exam=examId)
@@ -65,6 +69,7 @@ class SubjectCreateView(CreateAPIView):
 
 class SubjectDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = SubjectSerializer
+
     def get_queryset(self):
         examId = self.kwargs['examId']
         return Subject.objects.filter(exam=examId)
@@ -79,6 +84,7 @@ class QuestionsListView(ListAPIView):
     def get_queryset(self):
         subjectId = self.kwargs['subjectId']
         return Question.objects.filter(subject=subjectId)
+
 
 class QuestionCreateView(CreateAPIView):
     serializer_class = QuestionSerializer
@@ -124,15 +130,13 @@ class EnrollMentView(GenericAPIView):
 
         return Response(status=status.HTTP_200_OK)
 
+
 class StartedView(GenericAPIView):
+    permission_classes = (IsAdminOrEnrolled,)
+
     def post(self, request, id=None):
         # check if user present in the request
         user = request.user
-        if not user.is_authenticated:
-            return Response("You are not logged in", status=status.HTTP_401_UNAUTHORIZED)
-
-        if not id:
-            return Response("Invalid request", status=status.HTTP_400_BAD_REQUEST)
 
         # check if exam id exists by looing into Started table
         try:
@@ -140,11 +144,11 @@ class StartedView(GenericAPIView):
         except ObjectDoesNotExist as identifier:
             return Response("Not found", status=status.HTTP_404_NOT_FOUND)
 
-        obj = Started(owner=user, exam=exam)
+        obj = Started(exam=exam, owner=user)
 
         try:
             obj.save()
-        except IntegrityError as identifier:
+        except:
             return Response("You already started this exam", status=status.HTTP_200_OK)
 
         return Response(status=status.HTTP_200_OK)
@@ -167,7 +171,7 @@ class AnsweredView(GenericAPIView):
             obj.save()
         except IntegrityError as identifier:
             return Response("You already answered this question", status=status.HTTP_200_OK)
-                            
+
         serializers = AnsweredWithCorrectAnswerSerializer(obj)
         return Response(data=serializers.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_200_OK)
@@ -196,3 +200,21 @@ class AnsweredListVew(ListCreateAPIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+class EndedExamView(GenericAPIView):
+    permission_classes = (IsAdminOrEnrolled,)
+
+    def post(self, request, id=None):
+        user = request.user
+
+        try:
+            exam = Exam.objects.get(pk=id)
+            obj = Started.objects.get(owner=user, exam=exam)
+            obj.ended_at = datetime.now()
+            obj.exam_finished = True
+            obj.save()
+        except:
+            return Response("Bad request", status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = StartedSerializer(obj)
+        return Response(serializer.data, status=status.HTTP_200_OK)

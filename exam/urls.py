@@ -8,17 +8,19 @@ urlpatterns = [
     path('<int:examId>/subjectList', SubjectsListView.as_view()),
     path('<int:examId>/subject/<int:id>', SubjectDetailView.as_view()),
     path('<int:examId>/subject/new', SubjectCreateView.as_view()),
-    path('<int:examId>/subject/<int:subjectId>/questionList', QuestionsListView.as_view()),
-    path('<int:examId>/subject/<int:subjectId>/question/<int:id>', QuestionDetailView.as_view()),
-    path('<int:examId>/subject/<int:subjectId>/question/new', QuestionCreateView.as_view()),
+    path('<int:examId>/subject/<int:subjectId>/questionList',
+         QuestionsListView.as_view()),
+    path('<int:examId>/subject/<int:subjectId>/question/<int:id>',
+         QuestionDetailView.as_view()),
+    path('<int:examId>/subject/<int:subjectId>/question/new',
+         QuestionCreateView.as_view()),
     path('<int:id>/start', StartedView.as_view()),
+    path('<int:id>/stop', EndedExamView.as_view()),
     path('<int:id>/enroll', EnrollMentView.as_view()),
     path('<int:examId>/question/<int:qid>/answer/selected_option=<int:option>',
          AnsweredView.as_view()),
     path('<int:examId>/submit_answer_list', AnsweredListVew.as_view()),
-    path('<int:examId>/question/<int:qid>/answer/selected_option=<int:option>', AnsweredView.as_view()),
-  
+    path('<int:examId>/question/<int:qid>/answer/selected_option=<int:option>',
+         AnsweredView.as_view()),
+
 ]
-
-
-

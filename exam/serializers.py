@@ -10,6 +10,7 @@ class ExamSerializer(serializers.ModelSerializer):
         model = Exam
         fields = '__all__'
 
+
 class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
@@ -20,6 +21,7 @@ class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
         fields = '__all__'
+        extra_kwargs = {'answer': {'write_only': True}}
 
 
 class EnrollmentSerializer(serializers.ModelSerializer):
@@ -27,16 +29,11 @@ class EnrollmentSerializer(serializers.ModelSerializer):
         model = Enrollment
         fields = []
 
+
 class StartedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Started
         fields = []
-
-class AnsweredSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Answered
-        fields = []                      
-
 
 
 class ExamSerializer(serializers.ModelSerializer):
@@ -50,7 +47,6 @@ class QuestionSerializer(serializers.ModelSerializer):
         model = Question
         fields = '__all__'
         extra_kwargs = {'answer': {'write_only': True}}
-
 
 
 class StartedSerializer(serializers.ModelSerializer):
