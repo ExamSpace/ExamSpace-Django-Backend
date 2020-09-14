@@ -31,6 +31,9 @@ class RegistrationView(GenericAPIView):
         serializer = RegistrationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            user = User.objects.get(username=serializer.data['username'])
+            user.is_active = True
+            user.save()
 
             token = jwt.encode(
                 {'username': serializer.data['username'], 'exp': datetime.utcnow()+timedelta(minutes=60)}, settings.JWT_SECRET_KEY).decode('utf-8')
