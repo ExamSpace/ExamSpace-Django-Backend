@@ -33,7 +33,6 @@ class IsAdminOrEnrolled(permissions.BasePermission):
 class ExamsListView(ListAPIView):
     serializer_class = ExamSerializer
     queryset = Exam.objects.all()
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
 
 class ExamCreateView(CreateAPIView):
