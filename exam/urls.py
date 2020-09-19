@@ -5,6 +5,7 @@ urlpatterns = [
     path('list', ExamsListView.as_view()),
     path('<int:id>', ExamDetailView.as_view()),
     path('new', ExamCreateView.as_view()),
+    path('subjectList', SubjectsView.as_view()),
     path('<int:examId>/subjectList', SubjectsListView.as_view()),
     path('<int:examId>/subject/<int:id>', SubjectDetailView.as_view()),
     path('<int:examId>/subject/new', SubjectCreateView.as_view()),

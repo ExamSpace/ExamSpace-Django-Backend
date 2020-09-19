@@ -48,6 +48,11 @@ class ExamDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAdminOrReadOnly, )
 
 
+class SubjectsView(ListAPIView):
+    serializer_class = SubjectSerializer
+    queryset = Subject.objects.all()
+    #permission_classes = (IsAdminOrEnrolled, )
+
 class SubjectsListView(ListAPIView):
     serializer_class = SubjectSerializer
 
@@ -78,7 +83,7 @@ class SubjectDetailView(RetrieveUpdateDestroyAPIView):
 
 class QuestionsListView(ListAPIView):
     serializer_class = QuestionSerializer
-    permission_classes = (IsAdminOrEnrolled,)
+    #permission_classes = (IsAdminOrEnrolled,)
 
     def get_queryset(self):
         subjectId = self.kwargs['subjectId']
