@@ -9,6 +9,8 @@ urlpatterns = [
     path('<int:examId>/subjectList', SubjectsListView.as_view()),
     path('<int:examId>/subject/<int:id>', SubjectDetailView.as_view()),
     path('<int:examId>/subject/new', SubjectCreateView.as_view()),
+    path('<int:examId>/questionList',
+         SubjectWiseQuestionsListView.as_view()),
     path('<int:examId>/subject/<int:subjectId>/questionList',
          QuestionsListView.as_view()),
     path('<int:examId>/subject/<int:subjectId>/question/<int:id>',

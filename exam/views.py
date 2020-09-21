@@ -7,6 +7,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.utils import IntegrityError
+from rest_framework.views import APIView
+
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
@@ -79,6 +81,22 @@ class SubjectDetailView(RetrieveUpdateDestroyAPIView):
         return Subject.objects.filter(exam=examId)
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
+
+
+class SubjectWiseQuestionsListView(APIView):
+    #serializer_class = QuestionSerializer
+    #permission_classes = (IsAdminOrEnrolled,)
+
+    def get(self, request, *args, **kwargs):
+        temp=[]
+        examId = kwargs.get('examId', '')
+        subjects = Subject.objects.filter(exam=examId)
+        for subject in subjects:
+            questions = Question.objects.filter(subject=subject.id)
+            serializer = QuestionSerializer(questions, many=True)
+            temp.append(serializer.data)
+        return Response(temp)
+    #lookup_field = "name"
 
 
 class QuestionsListView(ListAPIView):
