@@ -61,7 +61,7 @@ class SubjectsListView(ListAPIView):
     def get_queryset(self):
         examId = self.kwargs['examId']
         return Subject.objects.filter(exam=examId)
-    permission_classes = (IsAdminOrEnrolled, )
+    #permission_classes = (IsAdminOrEnrolled, )
 
 
 class SubjectCreateView(CreateAPIView):
@@ -83,9 +83,7 @@ class SubjectDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAdminOrReadOnly, )
 
 
-class SubjectWiseQuestionsListView(APIView):
-    #serializer_class = QuestionSerializer
-    #permission_classes = (IsAdminOrEnrolled,)
+class QuestionsPerExam(APIView):
 
     def get(self, request, *args, **kwargs):
         temp=[]
@@ -94,9 +92,8 @@ class SubjectWiseQuestionsListView(APIView):
         for subject in subjects:
             questions = Question.objects.filter(subject=subject.id)
             serializer = QuestionSerializer(questions, many=True)
-            temp.append(serializer.data)
+            temp.append(serializer.data[0])
         return Response(temp)
-    #lookup_field = "name"
 
 
 class QuestionsListView(ListAPIView):

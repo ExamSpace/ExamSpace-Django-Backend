@@ -59,7 +59,7 @@ class Question(models.Model):
     answer = models.IntegerField(blank=False)
     true_false = models.BooleanField(default=False)
     fill_blank = models.BooleanField(default=False)
-    subject = models.ForeignKey(to=Subject, on_delete=models.CASCADE)
+    subject = models.ForeignKey(to=Subject, related_name='questions', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.question

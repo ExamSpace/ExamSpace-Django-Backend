@@ -11,17 +11,19 @@ class ExamSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SubjectSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Subject
-        fields = '__all__'
-
-
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
         fields = '__all__'
         extra_kwargs = {'answer': {'write_only': True}}
+
+
+class SubjectSerializer(serializers.ModelSerializer):
+    questions = QuestionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Subject
+        fields = ['name', 'exam', 'questions']
 
 
 class EnrollmentSerializer(serializers.ModelSerializer):
