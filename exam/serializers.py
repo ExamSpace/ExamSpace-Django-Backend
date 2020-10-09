@@ -15,7 +15,7 @@ class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
         fields = '__all__'
-        extra_kwargs = {'answer': {'write_only': True}}
+        # extra_kwargs = {'answer': {'write_only': True}}
 
 
 class SubjectSerializer(serializers.ModelSerializer):
