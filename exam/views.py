@@ -53,7 +53,7 @@ class ExamDetailView(RetrieveUpdateDestroyAPIView):
 class SubjectsView(ListAPIView):
     serializer_class = SubjectSerializer
     queryset = Subject.objects.all()
-    #permission_classes = (IsAdminOrEnrolled, )
+    permission_classes = (IsAdminOrEnrolled, )
 
 class SubjectsListView(ListAPIView):
     serializer_class = SubjectSerializer
@@ -61,7 +61,7 @@ class SubjectsListView(ListAPIView):
     def get_queryset(self):
         examId = self.kwargs['examId']
         return Subject.objects.filter(exam=examId)
-    #permission_classes = (IsAdminOrEnrolled, )
+    permission_classes = (IsAdminOrEnrolled, )
 
 
 class SubjectCreateView(CreateAPIView):
@@ -237,3 +237,31 @@ class EndedExamView(GenericAPIView):
 
         serializer = StartedSerializer(obj)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class MarksListView(ListAPIView):
+    serializer_class = MarkSerializer
+
+    def get_queryset(self):
+        examId = self.kwargs['examId']
+        return Mark.objects.filter(exam=examId)
+    permission_classes = (IsAdminOrEnrolled, )
+
+
+class MarkCreateView(CreateAPIView):
+    serializer_class = MarkSerializer
+
+    def get_queryset(self):
+        examId = self.kwargs['examId']
+        return Mark.objects.filter(exam=examId)
+    permission_classes = (IsAdminOrEnrolled, )
+
+
+class MarkDetailView(RetrieveUpdateDestroyAPIView):
+    serializer_class = MarkSerializer
+
+    def get_queryset(self):
+        examId = self.kwargs['examId']
+        return Mark.objects.filter(exam=examId)
+    lookup_field = "id"
+    permission_classes = (IsAdminOrEnrolled, )

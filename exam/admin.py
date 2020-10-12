@@ -7,4 +7,5 @@ admin.site.register(Exam)
 admin.site.register(Question)
 admin.site.register(Answered)
 admin.site.register(Subject)
+admin.site.register(Mark)
 

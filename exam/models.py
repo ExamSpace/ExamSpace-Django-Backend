@@ -92,3 +92,18 @@ class Answered(models.Model):
     class Meta:
         unique_together = [['question', 'user']]
         verbose_name_plural = "Answered"
+
+
+class Mark(models.Model):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE)
+    subject = models.ForeignKey(to=Subject, on_delete=models.CASCADE)
+    total_questions = models.IntegerField(default=0)
+    untouched = models.IntegerField(default=0)
+    wrong = models.IntegerField(default=0)
+    correct = models.IntegerField(default=0)
+    marks_lost =  models.FloatField(default=0.0)
+    total =  models.FloatField(default=0.0)
+    percentage =  models.FloatField(default=0.0)
+    highest_marks =  models.FloatField(default=0.0)
+    status =  models.CharField(max_length=255)

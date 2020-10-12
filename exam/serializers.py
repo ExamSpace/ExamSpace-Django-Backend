@@ -91,3 +91,8 @@ class AnsweredWithCorrectAnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answered
         fields = ['question', 'correct_answer', 'answer']
+
+class MarkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Mark
+        fields = '__all__'
