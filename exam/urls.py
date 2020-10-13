@@ -25,8 +25,8 @@ urlpatterns = [
     path('<int:examId>/submit_answer_list', AnsweredListVew.as_view()),
     path('<int:examId>/question/<int:qid>/answer/selected_option=<int:option>',
          AnsweredView.as_view()),
-    path('<int:examId>/marksList', SubjectsListView.as_view()),
-    path('<int:examId>/mark/<int:id>', SubjectDetailView.as_view()),
-    path('<int:examId>/mark/new', SubjectCreateView.as_view()),
+    path('<int:examId>/marksList', MarksListView.as_view()),
+    path('<int:examId>/mark/<int:id>', MarkDetailView.as_view()),
+    path('<int:examId>/mark/new', MarkCreateView.as_view()),
 
 ]
