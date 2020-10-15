@@ -8,7 +8,7 @@ from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.utils import IntegrityError
 from rest_framework.views import APIView
-
+from crum import get_current_user
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
@@ -48,6 +48,7 @@ class ExamDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Exam.objects.all()
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
+    
 
 
 class SubjectsView(ListAPIView):
@@ -241,7 +242,6 @@ class EndedExamView(GenericAPIView):
 
 class MarksListView(ListAPIView):
     serializer_class = MarkSerializer
-
     def get_queryset(self):
         examId = self.kwargs['examId']
         return Mark.objects.filter(exam=examId)

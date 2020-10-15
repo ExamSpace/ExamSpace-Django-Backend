@@ -12,7 +12,6 @@ from rest_framework import exceptions
 from django.contrib.auth.models import User
 from django.core.cache import cache
 import uuid
-
 from django.core.mail import send_mail
 from django.conf import settings
 from asgiref.sync import async_to_sync

@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import date
+from crum import get_current_user
 
 EXAM_TYPE = (
     ('marathon', 'MARATHON'),
@@ -95,7 +96,7 @@ class Answered(models.Model):
 
 
 class Mark(models.Model):
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, default= get_current_user())
     exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE)
     subject = models.ForeignKey(to=Subject, on_delete=models.CASCADE)
     total_questions = models.IntegerField(default=0)

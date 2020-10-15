@@ -23,7 +23,7 @@ class SubjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Subject
-        fields = ['name', 'exam', 'questions']
+        fields = ['name', 'exam', 'questions', 'id']
 
 
 class EnrollmentSerializer(serializers.ModelSerializer):
