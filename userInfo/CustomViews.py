@@ -10,7 +10,7 @@ class CustomCreateView(GenericAPIView):
 
 
     myClass= None
-    def post(self, request):
+    def post(self, request, **kwargs):
         
         # check if user present in the request
         user = request.user
@@ -25,10 +25,11 @@ class CustomCreateView(GenericAPIView):
         if(not user.is_superuser):
                 mydictionary['user']=user
         else:
-            if(User.objects.filter(id=request.data['user']).exists()):
-                mydictionary['user']=User.objects.get(id=request.data['user'])
-            else:
-                return Response("User does not exist", status=status.HTTP_400_BAD_REQUEST)
+            if('user' in request.data):
+                if(User.objects.filter(id=request.data['user']).exists()):
+                    mydictionary['user']=User.objects.get(id=request.data['user'])
+                else:
+                    return Response("User does not exist", status=status.HTTP_400_BAD_REQUEST)
         
         obj = self.myClass(**mydictionary)
 

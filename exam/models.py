@@ -96,7 +96,7 @@ class Answered(models.Model):
 
 
 class Mark(models.Model):
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE, default= get_current_user())
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE)
     subject = models.ForeignKey(to=Subject, on_delete=models.CASCADE)
     total_questions = models.IntegerField(default=0)

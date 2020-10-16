@@ -8,7 +8,6 @@ from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.utils import IntegrityError
 from rest_framework.views import APIView
-from crum import get_current_user
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
@@ -248,13 +247,42 @@ class MarksListView(ListAPIView):
     permission_classes = (IsAdminOrEnrolled, )
 
 
-class MarkCreateView(CreateAPIView):
+class MarkCreateView(GenericAPIView):
     serializer_class = MarkSerializer
+    def post(self, request, **kwargs):
+        user = request.user
+        mydictionary={}
+        mydictionary['user']=user
+        for field in request.data:
+                if(field=='exam'):
+                    mydictionary[field]=Exam.objects.get(pk=request.data['exam'])
+                    continue
+                if(field=='subject'):
+                    mydictionary[field]=Subject.objects.get(pk=request.data['subject'])
+                    continue
+                mydictionary[field]=request.data[field]    
+        else:
+            if('user' in request.data):
+                if(User.objects.filter(id=request.data['user']).exists()):
+                    mydictionary['user']=User.objects.get(id=request.data['user'])
+                else:
+                    return Response("User does not exist", status=status.HTTP_400_BAD_REQUEST)
+        
+        obj = Mark(**mydictionary)
 
-    def get_queryset(self):
-        examId = self.kwargs['examId']
-        return Mark.objects.filter(exam=examId)
-    permission_classes = (IsAdminOrEnrolled, )
+        for field in obj.__dict__:
+            if(field=='id' or field=='user_id'):
+                continue
+
+
+        try:
+            obj.save()
+        except IntegrityError as identifier:
+            print(identifier)
+            return Response("Data already Exists", status=status.HTTP_200_OK)
+
+        return Response("Created", status=status.HTTP_200_OK)
+
 
 
 class MarkDetailView(RetrieveUpdateDestroyAPIView):

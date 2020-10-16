@@ -96,3 +96,4 @@ class MarkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Mark
         fields = '__all__'
+
