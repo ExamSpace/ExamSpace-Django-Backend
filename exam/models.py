@@ -41,7 +41,7 @@ class Subject(models.Model):
     exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return str('%s - %s' % (self.name, self.exam))
 
 
 class Question(models.Model):
@@ -63,7 +63,7 @@ class Question(models.Model):
     subject = models.ForeignKey(to=Subject, related_name='questions', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.question
+        return str('%s - %s' % (self.question, self.subject))
 
 
 class Enrollment(models.Model):
@@ -108,3 +108,6 @@ class Mark(models.Model):
     percentage =  models.FloatField(default=0.0)
     highest_marks =  models.FloatField(default=0.0)
     status =  models.CharField(max_length=255)
+
+    def __str__(self):
+        return str('%s - %s - %s - Total Marks: %s' % (self.user, self.exam, self.subject, self.total))
