@@ -39,21 +39,21 @@ class ExamsListView(ListAPIView):
 class ExamCreateView(CreateAPIView):
     serializer_class = ExamSerializer
     queryset = Exam.objects.all()
-    permission_classes = (IsAdminOrReadOnly, )
+    # permission_classes = (IsAdminOrReadOnly, )
 
 
 class ExamDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = ExamSerializer
     queryset = Exam.objects.all()
     lookup_field = "id"
-    permission_classes = (IsAdminOrReadOnly, )
+    # permission_classes = (IsAdminOrReadOnly, )
     
 
 
 class SubjectsView(ListAPIView):
     serializer_class = SubjectSerializer
     queryset = Subject.objects.all()
-    permission_classes = (IsAdminOrEnrolled, )
+    # permission_classes = (IsAdminOrEnrolled, )
 
 class SubjectsListView(ListAPIView):
     serializer_class = SubjectSerializer
@@ -61,7 +61,7 @@ class SubjectsListView(ListAPIView):
     def get_queryset(self):
         examId = self.kwargs['examId']
         return Subject.objects.filter(exam=examId)
-    permission_classes = (IsAdminOrEnrolled, )
+    # permission_classes = (IsAdminOrEnrolled, )
 
 
 class SubjectCreateView(CreateAPIView):
@@ -70,7 +70,7 @@ class SubjectCreateView(CreateAPIView):
     def get_queryset(self):
         examId = self.kwargs['examId']
         return Subject.objects.filter(exam=examId)
-    permission_classes = (IsAdminOrReadOnly, )
+    # permission_classes = (IsAdminOrReadOnly, )
 
 
 class SubjectDetailView(RetrieveUpdateDestroyAPIView):
@@ -80,7 +80,7 @@ class SubjectDetailView(RetrieveUpdateDestroyAPIView):
         examId = self.kwargs['examId']
         return Subject.objects.filter(exam=examId)
     lookup_field = "id"
-    permission_classes = (IsAdminOrReadOnly, )
+    # permission_classes = (IsAdminOrReadOnly, )
 
 
 class QuestionsPerExam(APIView):
@@ -121,7 +121,7 @@ class QuestionDetailView(RetrieveUpdateDestroyAPIView):
         subjectId = self.kwargs['subjectId']
         return Question.objects.filter(subject=subjectId)
     lookup_field = "id"
-    permission_classes = (IsAdminOrReadOnly, )
+    # permission_classes = (IsAdminOrReadOnly, )
 
 
 class EnrollMentView(GenericAPIView):
@@ -244,8 +244,14 @@ class MarksListView(ListAPIView):
     def get_queryset(self):
         examId = self.kwargs['examId']
         return Mark.objects.filter(exam=examId)
-    permission_classes = (IsAdminOrEnrolled, )
+    # permission_classes = (IsAdminOrEnrolled, )
 
+class MarksPerUser(ListAPIView):
+    serializer_class = MarkSerializer
+    def get_queryset(self):
+        user = self.request.user
+        examId = self.kwargs['examId']
+        return Mark.objects.filter(user=user, exam=examId) 
 
 class MarkCreateView(GenericAPIView):
     serializer_class = MarkSerializer
@@ -292,4 +298,4 @@ class MarkDetailView(RetrieveUpdateDestroyAPIView):
         examId = self.kwargs['examId']
         return Mark.objects.filter(exam=examId)
     lookup_field = "id"
-    permission_classes = (IsAdminOrEnrolled, )
+    # permission_classes = (IsAdminOrEnrolled, )

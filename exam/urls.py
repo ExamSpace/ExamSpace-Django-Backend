@@ -26,6 +26,7 @@ urlpatterns = [
     path('<int:examId>/question/<int:qid>/answer/selected_option=<int:option>',
          AnsweredView.as_view()),
     path('<int:examId>/marksList', MarksListView.as_view()),
+    path('<int:examId>/marksPerUser', MarksPerUser.as_view()),
     path('<int:examId>/mark/<int:id>', MarkDetailView.as_view()),
     path('<int:examId>/mark/new', MarkCreateView.as_view()),
 
