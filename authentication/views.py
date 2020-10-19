@@ -22,7 +22,6 @@ async def mailSender(subject, message, recipient_list):
     send_mail(subject=subject, message=message,
               recipient_list=recipient_list, from_email=settings.EMAIL_HOST_USER, fail_silently=True)
 
-
 class RegistrationView(GenericAPIView):
     serializer_class = RegistrationSerializer
 
@@ -31,13 +30,13 @@ class RegistrationView(GenericAPIView):
         if serializer.is_valid():
             serializer.save()
             user = User.objects.get(username=serializer.data['username'])
-            user.is_active = True
+            user.is_active = False
             user.save()
 
             token = jwt.encode(
                 {'username': serializer.data['username'], 'exp': datetime.utcnow()+timedelta(minutes=60)}, settings.JWT_SECRET_KEY).decode('utf-8')
 
-            async_to_sync(mailSender('Welcome to rabirius', "http://127.0.0.1:8000/api/auth/activate?token="+token,
+            async_to_sync(mailSender('Welcome to ExamSpace!', "Please click on the link to activate your account:"+"http://127.0.0.1:8000/api/auth/activate?token="+token,
                                      [serializer.data['email']]), force_new_loop=True)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
