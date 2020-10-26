@@ -3,10 +3,23 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import date
 # Create your models here.
+
+class Countries(models.Model):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    country_code = models.CharField(max_length=255)
+    default_currency = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name_plural = "Countries"
+
+    def __str__(self):
+        return self.title   
+
 class Cities(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
-    country_id = models.CharField(max_length=255)
+    country = models.ForeignKey(to=Countries, on_delete=models.CASCADE, null=True)
     state = models.CharField(max_length=255)
     created = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
@@ -28,7 +41,7 @@ class Bloodgroup(models.Model):
         return self.blood_group_name
         
 class Address(models.Model):
-    city_id = models.IntegerField(blank=False)
+    city = models.ForeignKey(to=Cities, on_delete=models.CASCADE, null=True)
     full_name = models.CharField(max_length=191)
     address = models.CharField(max_length=191)
     address_2 = models.CharField(max_length=191)
@@ -81,24 +94,12 @@ class Contact(models.Model):
         return self.name
 
 class Feedback(models.Model):
-    customer_id = models.IntegerField(blank=False)
     message = models.TextField()
     status = models.SmallIntegerField(default=0)
     created_at = models.DateField(default=date.today)
     updated_at = models.DateField(default=date.today)
     user = models.OneToOneField(to=User, on_delete=models.CASCADE)
-        
-class Countries(models.Model):
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-    country_code = models.CharField(max_length=255)
-    default_currency = models.CharField(max_length=255)
-
-    class Meta:
-        verbose_name_plural = "Countries"
-
-    def __str__(self):
-        return self.title        
+             
 
 class Currencies(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
