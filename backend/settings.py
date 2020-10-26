@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'authentication',
     'corsheaders',
     'exam',
-    'userInfo'
+    'userInfo',
+    'img'
 ]
 
 REST_FRAMEWORK = {
@@ -177,6 +178,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=100),
-}
+MEDIA_ROOT =  os.path.join(BASE_DIR, 'img/assets') 
+MEDIA_URL = '/media/'

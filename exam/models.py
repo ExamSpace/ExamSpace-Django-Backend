@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import date
-from crum import get_current_user
 
 EXAM_TYPE = (
     ('marathon', 'MARATHON'),
