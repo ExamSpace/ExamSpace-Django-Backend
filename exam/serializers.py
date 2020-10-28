@@ -1,3 +1,4 @@
+from django.db.models import fields
 from rest_framework import serializers
 from .models import *
 from django.db import IntegrityError
@@ -25,6 +26,10 @@ class SubjectSerializer(serializers.ModelSerializer):
         model = Subject
         fields = ['name', 'exam', 'questions', 'id']
 
+class EventExamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventExam
+        fields = '__all__'
 
 class EnrollmentSerializer(serializers.ModelSerializer):
     class Meta:

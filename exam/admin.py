@@ -3,6 +3,7 @@ from import_export.admin import ImportExportModelAdmin
 from import_export import resources
 from .models import *
 
+admin.site.register(EventExam)
 admin.site.register(Enrollment)
 admin.site.register(Started)
 admin.site.register(Exam)

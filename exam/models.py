@@ -9,6 +9,12 @@ EXAM_TYPE = (
     ('timer', 'TIMER'),
 )
 
+EVENT_TYPE = (
+    ('marathon', 'MARATHON'),
+    ('single', 'SINGLE'),
+    ('timer', 'TIMER'),
+)
+
 
 class Exam(models.Model):
     name = models.CharField(max_length=255)
@@ -64,13 +70,19 @@ class Question(models.Model):
     def __str__(self):
         return str('%s - %s' % (self.question, self.subject))
 
+class EventExam(models.Model):
+    exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE)
+    starts_at = models.DateField(default=timezone.now)
+    start_time = models.TimeField(default=timezone.now)
+    end_time = models.TimeField(default=timezone.now)
+    eventType = models.CharField(
+        max_length=50, choices=EVENT_TYPE, default='marathon')
 
 class Enrollment(models.Model):
     class Meta:
-        unique_together = [['exam', 'owner']]
-    exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE)
+        unique_together = [['event', 'owner']]
+    event = models.ForeignKey(to=EventExam, on_delete=models.CASCADE, null=True)
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    enrolled_at = models.DateTimeField(default=timezone.now)
 
 
 class Started(models.Model):

@@ -123,6 +123,9 @@ class QuestionDetailView(RetrieveUpdateDestroyAPIView):
     lookup_field = "id"
     # permission_classes = (IsAdminOrReadOnly, )
 
+class EventExamView(ListAPIView):
+    serializer_class = EventExamSerializer
+    queryset = EventExam.objects.all()
 
 class EnrollMentView(GenericAPIView):
     def post(self, request, id=None):
