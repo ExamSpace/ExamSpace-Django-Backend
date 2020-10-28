@@ -139,11 +139,11 @@ class EnrollMentView(GenericAPIView):
 
         # check if exam id exists by looing into Enrollment table
         try:
-            exam = Exam.objects.get(pk=id)
+            event = EventExam.objects.get(pk=id)
         except ObjectDoesNotExist as identifier:
             return Response("Not found", status=status.HTTP_404_NOT_FOUND)
 
-        obj = Enrollment(owner=user, exam=exam)
+        obj = Enrollment(owner=user, event=event)
 
         try:
             obj.save()
