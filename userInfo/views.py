@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import *
 from .serializers import *
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView, CreateAPIView, RetrieveUpdateAPIView, DestroyAPIView, ListAPIView, RetrieveAPIView
@@ -14,18 +14,17 @@ class IsAdminOrReadOnly(permissions.BasePermission):
         is_admin = request.user and request.user.is_superuser
         return request.method in permissions.SAFE_METHODS or is_admin
 
-class AddressCreateView(CustomCreateView):
+class AddressCreateUpdateView(CustomCreateUpdateView):
     serializer_class=AddressSerializer
     myClass=Address
-
-class AddressUpdateView(CustomUpdateView):
-    serializer_class=AddressSerializer
-    myClass=Address  
 
 class AddressRetrieveView(RetrieveAPIView):
     serializer_class = AddressSerializer
     queryset = Address.objects.all()
-    lookup_field = "id"
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, user=self.request.user)
+        return obj
 
 
 class AddressDeleteView(DestroyAPIView):
@@ -35,18 +34,17 @@ class AddressDeleteView(DestroyAPIView):
     permission_classes = (IsAdminOrReadOnly, )
 
 
-class ConfigurationCreateView(CustomCreateView):
+class ConfigurationCreateUpdateView(CustomCreateUpdateView):
     serializer_class=ConfigurationSerializer
     myClass=Configuration
-
-class ConfigurationUpdateView(CustomUpdateView):
-    serializer_class=ConfigurationSerializer
-    myClass=Configuration 
 
 class ConfigurationRetrieveView(RetrieveAPIView):
     serializer_class = ConfigurationSerializer
     queryset = Configuration.objects.all()
-    lookup_field = "id"
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, user=self.request.user)
+        return obj
 
 
 class ConfigurationDeleteView(DestroyAPIView):
@@ -55,18 +53,18 @@ class ConfigurationDeleteView(DestroyAPIView):
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
 
-class ContactCreateView(CustomCreateView):
+class ContactCreateUpdateView(CustomCreateUpdateView):
     serializer_class=ContactSerializer
     myClass=Contact
 
-class ContactUpdateView(CustomUpdateView):
-    serializer_class=ContactSerializer
-    myClass=Contact 
 
 class ContactRetrieveView(RetrieveAPIView):
     serializer_class = ContactSerializer
     queryset = Contact.objects.all()
-    lookup_field = "id"
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, user=self.request.user)
+        return obj
 
 class ContactDeleteView(DestroyAPIView):
     serializer_class = ContactSerializer
@@ -74,18 +72,17 @@ class ContactDeleteView(DestroyAPIView):
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
 
-class FeedbackCreateView(CustomCreateView):
+class FeedbackCreateUpdateView(CustomCreateUpdateView):
     serializer_class=FeedbackSerializer
     myClass=Feedback
-
-class FeedbackUpdateView(CustomUpdateView):
-    serializer_class=FeedbackSerializer
-    myClass=Feedback 
 
 class FeedbackRetrieveView(RetrieveAPIView):
     serializer_class = FeedbackSerializer
     queryset = Feedback.objects.all()
-    lookup_field = "id"
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, user=self.request.user)
+        return obj
 
 
 class FeedbackDeleteView(DestroyAPIView):
@@ -94,18 +91,18 @@ class FeedbackDeleteView(DestroyAPIView):
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
 
-class CitiesCreateView(CustomCreateView):
+class CitiesCreateUpdateView(CustomCreateUpdateView):
     serializer_class=CitiesSerializer
     myClass=Cities
 
-class CitiesUpdateView(CustomUpdateView):
-    serializer_class=CitiesSerializer
-    myClass=Cities  
 
 class CitiesRetrieveView(RetrieveAPIView):
     serializer_class = CitiesSerializer
     queryset = Cities.objects.all()
-    lookup_field = "id"
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, user=self.request.user)
+        return obj
 
 
 class CitiesDeleteView(DestroyAPIView):
@@ -114,18 +111,17 @@ class CitiesDeleteView(DestroyAPIView):
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
 
-class BloodgroupCreateView(CustomCreateView):
+class BloodgroupCreateUpdateView(CustomCreateUpdateView):
     serializer_class=BloodgroupSerializer
     myClass=Bloodgroup
-
-class BloodgroupUpdateView(CustomUpdateView):
-    serializer_class=BloodgroupSerializer
-    myClass=Bloodgroup  
 
 class BloodgroupRetrieveView(RetrieveAPIView):
     serializer_class = BloodgroupSerializer
     queryset = Bloodgroup.objects.all()
-    lookup_field = "id"
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, user=self.request.user)
+        return obj
 
 
 class BloodgroupDeleteView(DestroyAPIView):
@@ -134,18 +130,18 @@ class BloodgroupDeleteView(DestroyAPIView):
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
 
-class CountriesCreateView(CustomCreateView):
+class CountriesCreateUpdateView(CustomCreateUpdateView):
     serializer_class=CountriesSerializer
     myClass=Countries
 
-class CountriesUpdateView(CustomUpdateView):
-    serializer_class=CountriesSerializer
-    myClass=Countries  
 
 class CountriesRetrieveView(RetrieveAPIView):
     serializer_class = CountriesSerializer
     queryset = Countries.objects.all()
-    lookup_field = "id"
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, user=self.request.user)
+        return obj
 
 
 class CountriesDeleteView(DestroyAPIView):
@@ -154,18 +150,18 @@ class CountriesDeleteView(DestroyAPIView):
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
 
-class CurrenciesCreateView(CustomCreateView):
+class CurrenciesCreateUpdateView(CustomCreateUpdateView):
     serializer_class=CurrenciesSerializer
     myClass=Currencies
 
-class CurrenciesUpdateView(CustomUpdateView):
-    serializer_class=CurrenciesSerializer
-    myClass=Currencies  
 
 class CurrenciesRetrieveView(RetrieveAPIView):
     serializer_class = CurrenciesSerializer
     queryset = Currencies.objects.all()
-    lookup_field = "id"
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, user=self.request.user)
+        return obj
 
 
 class CurrenciesDeleteView(DestroyAPIView):
@@ -174,18 +170,17 @@ class CurrenciesDeleteView(DestroyAPIView):
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
 
-class SocialCreateView(CustomCreateView):
+class SocialCreateUpdateView(CustomCreateUpdateView):
     serializer_class=SocialSerializer
     myClass=Social
-
-class SocialUpdateView(CustomUpdateView):
-    serializer_class=SocialSerializer
-    myClass=Social  
 
 class SocialRetrieveView(RetrieveAPIView):
     serializer_class = SocialSerializer
     queryset = Social.objects.all()
-    lookup_field = "id"
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, user=self.request.user)
+        return obj
 
 
 class SocialDeleteView(DestroyAPIView):
