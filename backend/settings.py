@@ -97,8 +97,8 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DB_PORT = '5432'
 DB_HOST = '35.187.246.142'                  # 'localhost'
 DB_NAME = 'postgres'            # 'apidb'
-DB_USER = 'examspace'            # 'apidbuser'
-DB_PASSWORD = 'examspace'
+DB_USER = 'kBxQltLZGPvRIBcHmtOH'            # 'apidbuser'
+DB_PASSWORD = 'r4osO3YeW1*Vae8GY6#L'
 
 DATABASES = {
     'default': {
