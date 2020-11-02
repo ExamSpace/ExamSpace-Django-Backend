@@ -20,9 +20,12 @@ class CustomCreateUpdateView(GenericAPIView):
         mydictionary={}
         mydictionary['user']=user
         for field in request.data:
-                if(field=='user' or '_at' in field):
-                    continue
-                mydictionary[field]=request.data[field]     
+            if (field=='city'):
+                mydictionary[field]=Cities.objects.get(id=request.data[field])
+                continue
+            if(field=='user' or '_at' in field):
+                continue
+            mydictionary[field]=request.data[field]     
 
         obj = self.myClass(**mydictionary)
 
