@@ -177,9 +177,9 @@ class StartedView(GenericAPIView):
 
 
 class AnsweredView(GenericAPIView):
-    permission_classes = (IsAdminOrEnrolled,)
+    # permission_classes = (IsAdminOrEnrolled,)
 
-    def post(self, request, examId=None, qid=None, option=None):
+    def post(self, request, qid=None, option=None):
         user = request.user
         # check if question id exists by looing into Answered table
         try:
@@ -199,21 +199,21 @@ class AnsweredView(GenericAPIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class AnsweredListVew(ListCreateAPIView):
-    permission_classes = (IsAdminOrEnrolled,)
+class AnsweredListVew(ListAPIView):
+    # permission_classes = (IsAdminOrEnrolled,)
     serializer_class = AnsweredSerializer
 
-    def post(self, request, *args, **kwargs):
-        is_many = isinstance(request.data, list)
+    # def post(self, request, *args, **kwargs):
+    #     is_many = isinstance(request.data, list)
 
-        serializer = self.get_serializer(
-            data=request.data, many=True)
-        if serializer.is_valid():
-            self.perform_create(serializer)
-            headers = self.get_success_headers(serializer.data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #     serializer = self.get_serializer(
+    #         data=request.data, many=True)
+    #     if serializer.is_valid():
+    #         self.perform_create(serializer)
+    #         headers = self.get_success_headers(serializer.data)
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    #     else:
+    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, *args, **kwargs):
         user = request.user

@@ -15,6 +15,7 @@ import uuid
 from django.core.mail import send_mail
 from django.conf import settings
 from asgiref.sync import async_to_sync
+from django.shortcuts import redirect
 
 
 @async_to_sync
@@ -36,7 +37,7 @@ class RegistrationView(GenericAPIView):
             token = jwt.encode(
                 {'username': serializer.data['username'], 'exp': datetime.utcnow()+timedelta(minutes=60)}, settings.JWT_SECRET_KEY).decode('utf-8')
 
-            async_to_sync(mailSender('Welcome to ExamSpace!', "Please click on the link to activate your account:"+"http://examspace.ddns.net:8000/api/auth/activate?token="+token,
+            async_to_sync(mailSender('Welcome to ExamSpace!', "Please click on the link to activate your account:"+"http://localhost:8000/api/auth/activate?token="+token,
                                      [serializer.data['email']]), force_new_loop=True)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -52,7 +53,7 @@ class ActivateView(APIView):
             if user:
                 user.is_active = True
                 user.save()
-                return Response({'detail': 'User account activated'}, status=status.HTTP_200_OK)
+                return redirect('http://examspace.ddns.net/')
             return Response({'detail': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
         except jwt.DecodeError as identifier:
             raise exceptions.AuthenticationFailed(detail='Invalid token')
