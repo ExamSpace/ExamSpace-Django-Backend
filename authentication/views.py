@@ -16,6 +16,10 @@ from django.core.mail import send_mail
 from django.conf import settings
 from asgiref.sync import async_to_sync
 from django.shortcuts import redirect
+from rest_framework import generics
+from . import serializers
+from rest_framework.permissions import IsAuthenticated
+from .serializers import ChangePasswordSerializer  
 
 
 @async_to_sync
@@ -230,3 +234,37 @@ class UserInfo(APIView):
             raise exceptions.AuthenticationFailed(detail='Invalid token')
         except jwt.ExpiredSignatureError as identifier:
             raise exceptions.AuthenticationFailed(detail='Invalid token')
+
+class ChangePasswordView(generics.UpdateAPIView):
+    """
+    An endpoint for changing password.
+    """
+    serializer_class = ChangePasswordSerializer
+    model = User
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self, queryset=None):
+        obj = self.request.user
+        return obj
+
+    def update(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            # Check old password
+            if not self.object.check_password(serializer.data.get("old_password")):
+                return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
+            # set_password also hashes the password that the user will get
+            self.object.set_password(serializer.data.get("new_password"))
+            self.object.save()
+            response = {
+                'status': 'success',
+                'code': status.HTTP_200_OK,
+                'message': 'Password updated successfully',
+                'data': []
+            }
+
+            return Response(response)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
