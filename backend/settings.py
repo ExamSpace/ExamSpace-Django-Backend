@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'exam',
     'userInfo',
+    'django_rest_passwordreset',
     'img'
 ]
 
