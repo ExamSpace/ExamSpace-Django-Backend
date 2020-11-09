@@ -4,9 +4,9 @@ from django.db import IntegrityError
 from rest_framework.response import Response
 from rest_framework import status
 
-class AddressSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Address
+        model = Profile
         fields = '__all__'
 
 class ConfigurationSerializer(serializers.ModelSerializer):
@@ -28,11 +28,6 @@ class CitiesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cities
         fields = '__all__'   
-
-class BloodgroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Bloodgroup
-        fields = '__all__' 
 
 class CountriesSerializer(serializers.ModelSerializer):
     class Meta:

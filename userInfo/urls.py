@@ -2,8 +2,8 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path('address', AddressRetrieveView.as_view()),
-    path('address/new', AddressCreateUpdateView.as_view()),
+    path('profile', ProfileRetrieveView.as_view()),
+    path('profile/new', ProfileCreateUpdateView.as_view()),
     path('config', ConfigurationRetrieveView.as_view()),
     path('config/new', ConfigurationCreateUpdateView.as_view()),
     path('contact', ContactRetrieveView.as_view()),
@@ -12,8 +12,6 @@ urlpatterns = [
     path('feedback/new', FeedbackCreateUpdateView.as_view()),
     path('cities', CitiesRetrieveView.as_view()),
     path('cities/new', CitiesCreateUpdateView.as_view()),  
-    path('bloodgroup', BloodgroupRetrieveView.as_view()),
-    path('bloodgroup/new', BloodgroupCreateUpdateView.as_view()),
     path('countries', CountriesRetrieveView.as_view()),
     path('countries/new', CountriesCreateUpdateView.as_view()),
     path('currencies', CurrenciesRetrieveView.as_view()),

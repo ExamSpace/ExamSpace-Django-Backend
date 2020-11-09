@@ -14,22 +14,22 @@ class IsAdminOrReadOnly(permissions.BasePermission):
         is_admin = request.user and request.user.is_superuser
         return request.method in permissions.SAFE_METHODS or is_admin
 
-class AddressCreateUpdateView(CustomCreateUpdateView):
-    serializer_class=AddressSerializer
-    myClass=Address
+class ProfileCreateUpdateView(CustomCreateUpdateView):
+    serializer_class=ProfileSerializer
+    myClass=Profile
 
-class AddressRetrieveView(RetrieveAPIView):
-    serializer_class = AddressSerializer
-    queryset = Address.objects.all()
+class ProfileRetrieveView(RetrieveAPIView):
+    serializer_class = ProfileSerializer
+    queryset = Profile.objects.all()
     def get_object(self):
         queryset = self.get_queryset()
         obj = get_object_or_404(queryset, user=self.request.user)
         return obj
 
 
-class AddressDeleteView(DestroyAPIView):
-    serializer_class = AddressSerializer
-    queryset = Address.objects.all()
+class ProfileDeleteView(DestroyAPIView):
+    serializer_class = ProfileSerializer
+    queryset = Profile.objects.all()
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
 
@@ -96,37 +96,14 @@ class CitiesCreateUpdateView(CustomCreateUpdateView):
     myClass=Cities
 
 
-class CitiesRetrieveView(RetrieveAPIView):
+class CitiesRetrieveView(ListAPIView):
     serializer_class = CitiesSerializer
     queryset = Cities.objects.all()
-    def get_object(self):
-        queryset = self.get_queryset()
-        obj = get_object_or_404(queryset, user=self.request.user)
-        return obj
 
 
 class CitiesDeleteView(DestroyAPIView):
     serializer_class = CitiesSerializer
     queryset = Cities.objects.all()
-    lookup_field = "id"
-    permission_classes = (IsAdminOrReadOnly, )
-
-class BloodgroupCreateUpdateView(CustomCreateUpdateView):
-    serializer_class=BloodgroupSerializer
-    myClass=Bloodgroup
-
-class BloodgroupRetrieveView(RetrieveAPIView):
-    serializer_class = BloodgroupSerializer
-    queryset = Bloodgroup.objects.all()
-    def get_object(self):
-        queryset = self.get_queryset()
-        obj = get_object_or_404(queryset, user=self.request.user)
-        return obj
-
-
-class BloodgroupDeleteView(DestroyAPIView):
-    serializer_class = BloodgroupSerializer
-    queryset = Bloodgroup.objects.all()
     lookup_field = "id"
     permission_classes = (IsAdminOrReadOnly, )
 

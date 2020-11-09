@@ -5,7 +5,6 @@ from datetime import date
 # Create your models here.
 
 class Countries(models.Model):
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     country_code = models.CharField(max_length=255)
     default_currency = models.CharField(max_length=255)
@@ -17,7 +16,6 @@ class Countries(models.Model):
         return self.title   
 
 class Cities(models.Model):
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     country = models.ForeignKey(to=Countries, on_delete=models.CASCADE, null=True)
     state = models.CharField(max_length=255)
@@ -29,20 +27,11 @@ class Cities(models.Model):
 
     def __str__(self):
         return self.title
-
-class Bloodgroup(models.Model):
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    blood_group_name = models.CharField(max_length=255)
-
-    class Meta:
-      verbose_name_plural = "Blood Group"    
-
-    def __str__(self):
-        return self.blood_group_name
         
-class Address(models.Model):
+class Profile(models.Model):
     city = models.ForeignKey(to=Cities, on_delete=models.CASCADE, null=True)
     full_name = models.CharField(max_length=191)
+    blood_group = models.CharField(max_length=255)
     address = models.CharField(max_length=191)
     address_2 = models.CharField(max_length=191)
     zip_code = models.CharField(max_length=191)
@@ -53,8 +42,6 @@ class Address(models.Model):
 
     def __str__(self):
         return self.full_name
-    class Meta:
-        verbose_name_plural = "Addresses"
 
 
 class Configuration(models.Model):
