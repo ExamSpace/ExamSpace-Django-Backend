@@ -57,7 +57,7 @@ class ActivateView(APIView):
             if user:
                 user.is_active = True
                 user.save()
-                return redirect('http://examspace.ddns.net/')
+                return redirect('http://examspace.ddns.net/email_verify')
             return Response({'detail': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
         except jwt.DecodeError as identifier:
             raise exceptions.AuthenticationFailed(detail='Invalid token')
